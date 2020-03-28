@@ -4,40 +4,45 @@ const github = require("@actions/github");
 
 const src = __dirname;
 
-try {
-  headRef = core.getInput("head-ref");
-  baseRef = core.getInput("base-ref");
-  const myToken = core.getInput("myToken");
-  const octokit = new github.GitHub(myToken);
-  const org = github.context.repo.owner;
-  const repo = github.context.repo.repo;
+async function run() {
+  try {
+    headRef = core.getInput("head-ref");
+    baseRef = core.getInput("base-ref");
+    const myToken = core.getInput("myToken");
+    const octokit = new github.GitHub(myToken);
+    const { owner, repo } = github.context.repo;
+    const regexp = /^[\.A-Za-z0-9_-]*$/;
 
-  const regexp = /^[\.A-Za-z0-9_-]*$/;
+    if (!headRef) {
+      headRef = github.context.sha;
+    }
 
-  if (!headRef) {
-    headRef = github.context.sha;
+    if (!baseRef) {
+      const latestRelease = await octokit.repos.getLatestRelease({
+        owner: owner,
+        repo: repo
+      });
+      baseRef = latestRelease.data.tag_name;
+    }
+
+    console.log(`head-ref: ${headRef}`);
+    console.log(`base-ref: ${baseRef}`);
+
+    if (
+      !!headRef &&
+      !!baseRef &&
+      regexp.test(headRef) &&
+      regexp.test(baseRef)
+    ) {
+      getChangelog(headRef, baseRef, owner + "/" + repo);
+    } else {
+      const regexError =
+        "Branch names must contain only numbers, strings, underscores, periods, and dashes.";
+      core.setFailed(regexError);
+    }
+  } catch (error) {
+    core.setFailed(error.message);
   }
-
-  if (!baseRef) {
-    release = octokit.repos.getLatestRelease({
-      owner: org,
-      repo: repo
-    });
-    baseRef = JSON.parse(release).tag_name;
-  }
-
-  console.log(`head-ref: ${headRef}`);
-  console.log(`base-ref: ${baseRef}`);
-
-  if (!!headRef && !!baseRef && regexp.test(headRef) && regexp.test(baseRef)) {
-    getChangelog(headRef, baseRef, org + "/" + repo);
-  } else {
-    const regexError =
-      "Branch names must contain only numbers, strings, underscores, periods, and dashes.";
-    core.setFailed(regexError);
-  }
-} catch (error) {
-  core.setFailed(error.message);
 }
 
 async function getChangelog(headRef, baseRef, repoName) {
@@ -79,4 +84,10 @@ async function getChangelog(headRef, baseRef, repoName) {
     );
     process.exit(0);
   }
+}
+
+try {
+  run();
+} catch (error) {
+  core.setFailed(error.message);
 }
