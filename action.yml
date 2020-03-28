@@ -17,5 +17,5 @@ runs:
   using: "node12"
   main: "index.js"
 branding:
-  icon: "hash"
-  color: "orange"
+  icon: "list"
+  color: "blue"
