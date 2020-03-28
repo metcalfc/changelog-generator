@@ -34,7 +34,7 @@ Next you will need to generate the changelog itself. To get the changelog betwee
 
     - name: Generate changelog
       id: changelog
-      uses: metcalfc/changelog-generator@v0.0.1
+      uses: metcalfc/changelog-generator@v0.1.1
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,7 +42,7 @@ Or if you have two specific references you want:
 
     - name: Generate changelog
       id: changelog
-      uses: metcalfc/changelog-generator@v0.0.1
+      uses: metcalfc/changelog-generator@v0.1.1
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
         head-ref: 'v0.0.2'
@@ -54,3 +54,7 @@ Lastly you need to use the changelog.
       run: echo "${{ steps.changelog.outputs.changelog }}"
 
 Why do we need `myToken`? Read more here: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret
+
+## Example use case
+
+[Generating the release notes for a GitHub Release.](.github/workflows/release.yml)
