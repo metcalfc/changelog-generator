@@ -1,6 +1,6 @@
 # Get a changelog between two references
 
-This Action returns the commit difference count between two git references.
+This Action returns a markdown formatted changelog between two git references.
 
 ## Inputs
 
