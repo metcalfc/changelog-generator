@@ -58,3 +58,7 @@ Why do we need `myToken`? Read more here: https://help.github.com/en/actions/aut
 ## Example use case
 
 [Generating the release notes for a GitHub Release.](.github/workflows/release.yml)
+
+## Acknowledgements
+
+I took the basic framework for this action from: [jessicalostinspace/commit-difference-action](https://github.com/jessicalostinspace/commit-difference-action). Thanks @jessicalostinspace.
