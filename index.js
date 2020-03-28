@@ -9,8 +9,8 @@ try {
   baseRef = core.getInput("base-ref");
   const myToken = core.getInput("myToken");
   const octokit = new github.GitHub(myToken);
-  const org = github.context.repository.split("/")[0];
-  const repo = github.context.repository.split("/")[1];
+  const org = github.context.repo.owner;
+  const repo = github.context.repo.repo;
 
   const regexp = /^[\.A-Za-z0-9_-]*$/;
 
@@ -19,9 +19,9 @@ try {
   }
 
   if (!baseRef) {
-    release = await octokit.repos.getLatestRelease({
-      org,
-      repo
+    release = octokit.repos.getLatestRelease({
+      owner: org,
+      repo: repo
     });
     baseRef = JSON.parse(release).tag_name;
   }
@@ -30,7 +30,7 @@ try {
   console.log(`base-ref: ${baseRef}`);
 
   if (!!headRef && !!baseRef && regexp.test(headRef) && regexp.test(baseRef)) {
-    getChangelog(headRef, baseRef, github.context.repository);
+    getChangelog(headRef, baseRef, org + "/" + repo);
   } else {
     const regexError =
       "Branch names must contain only numbers, strings, underscores, periods, and dashes.";
@@ -62,16 +62,13 @@ async function getChangelog(headRef, baseRef, repoName) {
       [headRef, baseRef, repoName],
       options
     );
-    const { changelog } = JSON.parse(output);
 
-    if (changelog) {
+    if (output) {
       console.log(
         "\x1b[32m%s\x1b[0m",
-        `Found ${
-          changelog.split(/\r\n|\r|\n/).length
-        } commits between ${baseRef} and ${headRef}.`
+        `Changelog between ${baseRef} and ${headRef}:\n${output}`
       );
-      core.setOutput("changelog", changelog);
+      core.setOutput("changelog", output);
     } else {
       core.setFailed(err);
       process.exit(1);
