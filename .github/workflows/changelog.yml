@@ -1,0 +1,26 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Testing
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@master
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: "v0.0.2"
+          base-ref: "v0.0.1"
+      - name: Get the changelog
+        run: echo "${{ steps.changelog.outputs.changelog }}"
+      - name: Generate changelog from release
+        id: release
+        uses: metcalfc/changelog-generator@master
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get the changelog
+        run: echo "${{ steps.release.outputs.changelog }}"
