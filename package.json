@@ -10,8 +10,14 @@
     "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md",
     "bump:workflow": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./.github/workflows/*yml",
     "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
+    "lint": "eslint ./ --cache --ignore-pattern .gitignore"
   },
+  "pre-commit": [
+    "precommit-msg",
+    "precommit"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/metcalfc/changelog-generator.git"
@@ -38,6 +44,8 @@
   },
   "devDependencies": {
     "@zeit/ncc": "^0.22.0",
+    "eslint": "^6.8.0",
+    "pre-commit": "^1.2.2",
     "replace": "^1.1.5"
   }
 }
