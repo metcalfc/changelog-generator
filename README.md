@@ -24,7 +24,7 @@ There are two blocks you will need. First you will need to generate the changelo
 
     - name: Generate changelog
       id: changelog
-      uses: metcalfc/changelog-generator@v0.2.1
+      uses: metcalfc/changelog-generator@v0.2.2
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -32,7 +32,7 @@ Or if you have two specific references you want:
 
     - name: Generate changelog
       id: changelog
-      uses: metcalfc/changelog-generator@v0.2.1
+      uses: metcalfc/changelog-generator@v0.2.2
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
         head-ref: 'v0.0.2'
