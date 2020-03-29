@@ -12,10 +12,11 @@
     "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml",
     "postversion": "git push && git push --tags",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "lint": "eslint ./ --cache --ignore-pattern .gitignore"
+    "lint": "eslint ./"
   },
   "pre-commit": [
     "precommit-msg",
+    "lint",
     "precommit"
   ],
   "repository": {

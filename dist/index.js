@@ -1394,12 +1394,12 @@ const src = __dirname;
 
 async function run() {
   try {
-    headRef = core.getInput("head-ref");
-    baseRef = core.getInput("base-ref");
+    var headRef = core.getInput("head-ref");
+    var baseRef = core.getInput("base-ref");
     const myToken = core.getInput("myToken");
     const octokit = new github.GitHub(myToken);
     const { owner, repo } = github.context.repo;
-    const regexp = /^[\.A-Za-z0-9_-]*$/;
+    const regexp = /^[.A-Za-z0-9_-]*$/;
 
     if (!headRef) {
       headRef = github.context.sha;
@@ -1410,7 +1410,7 @@ async function run() {
         owner: owner,
         repo: repo
       });
-      if (!!latestRelease) {
+      if (!latestRelease) {
         baseRef = latestRelease.data.tag_name;
       } else {
         core.setFailed(
