@@ -13,16 +13,22 @@ async function run() {
     const { owner, repo } = github.context.repo;
     const regexp = /^[\.A-Za-z0-9_-]*$/;
 
-    if (!headRef) {
+    if (!!headRef) {
       headRef = github.context.sha;
     }
 
-    if (!baseRef) {
+    if (!!baseRef) {
       const latestRelease = await octokit.repos.getLatestRelease({
         owner: owner,
         repo: repo
       });
-      baseRef = latestRelease.data.tag_name;
+      if (!!latestRelease) {
+        baseRef = latestRelease.data.tag_name;
+      } else {
+        core.setFailed(
+          `There are no releases on ${owner}/${repo}. Tags are not releases.`
+        );
+      }
     }
 
     console.log(`head-ref: ${headRef}`);
@@ -36,9 +42,9 @@ async function run() {
     ) {
       getChangelog(headRef, baseRef, owner + "/" + repo);
     } else {
-      const regexError =
-        "Branch names must contain only numbers, strings, underscores, periods, and dashes.";
-      core.setFailed(regexError);
+      core.setFailed(
+        "Branch names must contain only numbers, strings, underscores, periods, and dashes."
+      );
     }
   } catch (error) {
     core.setFailed(error.message);
