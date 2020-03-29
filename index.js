@@ -13,11 +13,11 @@ async function run() {
     const { owner, repo } = github.context.repo;
     const regexp = /^[\.A-Za-z0-9_-]*$/;
 
-    if (!!headRef) {
+    if (!headRef) {
       headRef = github.context.sha;
     }
 
-    if (!!baseRef) {
+    if (!baseRef) {
       const latestRelease = await octokit.repos.getLatestRelease({
         owner: owner,
         repo: repo
