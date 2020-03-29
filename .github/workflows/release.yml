@@ -12,11 +12,6 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      # By default the checkout is shallow. Fetch all tags, branches, and history.
-      - run: |
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-          git fetch --prune --unshallow
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@master

@@ -20,17 +20,7 @@ Markdown formatted changelog.
 
 ## Example usage
 
-There are three blocks you will need. The first is an additional run block after your checkout. By default an action checkout is shallow. So add:
-
-    - name: Checkout
-      uses: actions/checkout@v2
-    # By default the checkout is shallow. Fetch all tags, branches, and history.
-    - run: |
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git fetch --prune --unshallow
-
-Next you will need to generate the changelog itself. To get the changelog between the SHA of the commit that triggered the action and the tag of the latest release:
+There are two blocks you will need. First you will need to generate the changelog itself. To get the changelog between the SHA of the commit that triggered the action and the tag of the latest release:
 
     - name: Generate changelog
       id: changelog
@@ -48,7 +38,7 @@ Or if you have two specific references you want:
         head-ref: 'v0.0.2'
         base-ref: 'v0.0.1'
 
-Lastly you need to use the changelog.
+Then you can to use the resulting changelog.
 
     - name: Get the changelog
       run: echo "${{ steps.changelog.outputs.changelog }}"
