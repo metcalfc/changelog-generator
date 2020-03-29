@@ -2,12 +2,14 @@
   "name": "changelog-generator",
   "version": "0.2.2",
   "description": "A GitHub Action that compares the commit differences between two branches",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build ./index.js",
+    "precommit": "npm run build && git add dist/",
     "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md",
     "bump:workflow": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./.github/workflows/*yml",
-    "version": "npm run bump:readme && npm run bump:workflow && git add ./README.md ./.github/workflows/*yml",
+    "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml",
     "postversion": "git push && git push --tags"
   },
   "repository": {
@@ -35,6 +37,7 @@
     "@actions/github": "^2.1.1"
   },
   "devDependencies": {
+    "@zeit/ncc": "^0.22.0",
     "replace": "^1.1.5"
   }
 }
