@@ -1,9 +1,10 @@
+name: test
 on: [push]
+
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Testing
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
