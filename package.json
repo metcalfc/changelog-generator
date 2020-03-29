@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md",
+    "bump:workflow": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./.github/workflows/*yml",
+    "version": "npm run bump:readme && npm run bump:workflow && git add ./README.md ./.github/workflows/*yml",
     "postversion": "git push && git push --tags"
   },
   "repository": {
