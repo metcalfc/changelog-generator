@@ -1410,7 +1410,7 @@ async function run() {
         owner: owner,
         repo: repo
       })
-      if (!latestRelease) {
+      if (latestRelease) {
         baseRef = latestRelease.data.tag_name
       } else {
         core.setFailed(
