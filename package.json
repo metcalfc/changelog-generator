@@ -4,17 +4,17 @@
   "description": "A GitHub Action that compares the commit differences between two branches",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build ./index.js",
-    "precommit": "npm run build && git add dist/",
     "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md",
     "bump:workflow": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./.github/workflows/*yml",
-    "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml",
+    "format-check": "prettier --check **/*.{js,yml,json}",
+    "format": "prettier --write **/*.{js,yml,json}",
+    "lint": "eslint ./",
     "postversion": "git push && git push --tags",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "lint": "eslint ./",
-    "format": "prettier --write **/*.{js,yml,json}",
-    "format-check": "prettier --check **/*.{js,yml,json}"
+    "precommit": "npm run build && git add dist/",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml"
   },
   "pre-commit": [
     "precommit-msg",
