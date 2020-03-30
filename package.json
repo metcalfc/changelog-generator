@@ -19,6 +19,7 @@
   "pre-commit": [
     "precommit-msg",
     "lint",
+    "format-check",
     "precommit"
   ],
   "repository": {

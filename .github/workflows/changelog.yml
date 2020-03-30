@@ -1,7 +1,6 @@
 name: test
 on: [push]
 
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,8 +13,8 @@ jobs:
         uses: metcalfc/changelog-generator@master
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-          head-ref: "v0.0.2"
-          base-ref: "v0.0.1"
+          head-ref: 'v0.0.2'
+          base-ref: 'v0.0.1'
       - name: Get the changelog
         run: echo "${{ steps.changelog.outputs.changelog }}"
       - name: Generate changelog from release
