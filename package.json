@@ -1,6 +1,6 @@
 {
   "name": "changelog-generator",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A GitHub Action that compares the commit differences between two branches",
   "main": "dist/index.js",
   "scripts": {
