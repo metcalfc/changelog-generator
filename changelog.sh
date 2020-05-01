@@ -13,5 +13,5 @@ git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 git fetch --prune --unshallow 1>&2
 
 git log "${base_ref}...${head_ref}" \
-  --pretty=format:"* \`[%h]\`(http://github.com/${repo_url}/commit/%H) -  %s" \
+  --pretty=format:"* [\`%h\`](http://github.com/${repo_url}/commit/%H) -  %s" \
   --reverse
