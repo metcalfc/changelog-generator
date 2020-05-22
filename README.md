@@ -8,6 +8,12 @@ I just wanted a simple way to populate the body of a GitHub Release.
 
 ## Inputs
 
+### `mytoken`
+
+A GITHUB_TOKEN with the ability to pull from the repo in question. This is required.
+
+Why do we need `myToken`? Read more here: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret
+
 ### `head-ref`
 
 The name of the head reference. Default `${{github.sha}}`.
@@ -46,8 +52,6 @@ Then you can to use the resulting changelog.
 
     - name: Get the changelog
       run: echo "${{ steps.changelog.outputs.changelog }}"
-
-Why do we need `myToken`? Read more here: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret
 
 ## Example use case
 
