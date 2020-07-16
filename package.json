@@ -43,7 +43,7 @@
   "homepage": "https://github.com/metcalfc/changelog-generator#readme",
   "dependencies": {
     "@actions/core": "^1.2.3",
-    "@actions/exec": "^1.0.3",
+    "@actions/exec": "^1.0.4",
     "@actions/github": "^4.0.0"
   },
   "devDependencies": {
