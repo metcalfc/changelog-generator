@@ -19,7 +19,7 @@ jobs:
         run: echo "${{ steps.changelog.outputs.changelog }}"
       - name: Generate changelog from release
         id: release
-        uses: metcalfc/changelog-generator@master
+        uses: metcalfc/changelog-generator@main
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the changelog
