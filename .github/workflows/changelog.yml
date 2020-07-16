@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@master
+        uses: metcalfc/changelog-generator@main
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'v0.0.2'
