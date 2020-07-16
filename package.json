@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build ./index.js",
-    "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md",
+    "bump:readme": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./README.md ./SECURITY.md",
     "bump:workflow": "replace 'v[0-9]+.[1-9]+.[0-9]+' \"v$npm_package_version\" ./.github/workflows/*yml",
     "format-check": "prettier --check **/*.{js,yml,json}",
     "format": "prettier --write **/*.{js,yml,json}",
