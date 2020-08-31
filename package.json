@@ -14,7 +14,7 @@
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit": "npm run build && git add dist/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./.github/workflows/*yml"
+    "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./SECURITY.md ./.github/workflows/*yml"
   },
   "pre-commit": [
     "precommit-msg",

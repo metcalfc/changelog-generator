@@ -20,6 +20,13 @@ then
   base_ref=$(git rev-list --max-parents=0 HEAD)
 fi
 
-git log "${base_ref}...${head_ref}" \
+log=$(git log "${base_ref}...${head_ref}" \
   --pretty=format:"* [\`%h\`](http://github.com/${repo_url}/commit/%H) - %s" \
-  --reverse
+  --reverse)
+
+if [ -z "$log" ];
+then
+  log="No Changes."
+fi
+
+echo "$log"
