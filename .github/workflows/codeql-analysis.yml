@@ -1,11 +1,7 @@
 name: 'CodeQL'
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [main]
+  # Run nightly. We don't need to burn action minutes on this for every run
   schedule:
     - cron: '0 22 * * 0'
 
