@@ -22,6 +22,16 @@ The name of the head reference. Default `${{github.sha}}`.
 
 The name of the second branch. Defaults to the `tag_name` of the latest release.
 
+## `firstRelease`
+
+The flag of base-ref setting when no release. Default `"commit"`.
+
+If your repository has never published a release,
+you can set the base reference through this parameter.
+
+When this parameter is set to "commit", the base reference will be set to initial commit.
+When this parameter is set to "tag", the base reference will be set to the latest tag.
+
 ## Outputs
 
 ### `changelog`
