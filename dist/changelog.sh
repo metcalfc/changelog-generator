@@ -12,15 +12,23 @@ git fetch --depth=1 origin +refs/tags/*:refs/tags/* 1>&2
 git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/* 1>&2
 git fetch --prune --unshallow 1>&2
 
-# if folks don't have a base ref to compare against just use the initial
-# commit. This will show all the changes since the beginning but I can't
-# think of a better default.
-if [ -z "$base_ref" ]
+# If there is no release for comparison, the initial commit is used when "$commit"
+# is obtained, This will show all the changes since the beginning.
+# the latest tag is used when "$tag" is obtained, and the default is "$commit".
+if [ "$base_ref" = "\$commit" ]
 then
   base_ref=$(git rev-list --max-parents=0 HEAD)
+  flag=$head_ref # Include the first commit
+elif [ "$base_ref" = "\$tag" ]
+then
+  tagName=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1 --skip=1))
+  base_ref=$(git rev-list ${tagName} --max-count=1)
+  flag="${base_ref}...${head_ref}"
+else
+  flag="${base_ref}...${head_ref}"
 fi
 
-log=$(git log "${base_ref}...${head_ref}" \
+log=$(git log "${flag}" \
   --pretty=format:"* [\`%h\`](http://github.com/${repo_url}/commit/%H) - %s" \
   --reverse)
 
