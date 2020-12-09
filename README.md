@@ -20,7 +20,7 @@ The name of the head reference. Default `${{github.sha}}`.
 
 ### `base-ref`
 
-The name of the second branch. Defaults to the `tag_name` of the latest release.
+The name of the second branch. Defaults to the `tag_name` of the latest GitHub release. *This must be a GitHub release. Git tags or branches will not work.*
 
 ## Outputs
 
@@ -72,6 +72,18 @@ updates:
     schedule:
       interval: 'daily'
 ```
+## Troubleshooting
+
+### Error not found
+
+```
+Error: Not Found
+```
+
+If you are seeing this error its likely that you do not yet have a GitHub release. You might have a git tag and that shows up in the release tab. The
+API this Action uses only works with GitHub Releases. Covnert one of your tags to a release and you'll be on your way. You can check out how this
+repository uses this action and GitHub releases for an [example](.github/workflows/release.yml).
+
 
 ## Acknowledgements
 
