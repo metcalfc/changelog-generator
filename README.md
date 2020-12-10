@@ -81,7 +81,7 @@ Error: Not Found
 ```
 
 If you are seeing this error its likely that you do not yet have a GitHub release. You might have a git tag and that shows up in the release tab. The
-API this Action uses only works with GitHub Releases. Covnert one of your tags to a release and you'll be on your way. You can check out how this
+API this Action uses only works with GitHub Releases. Convert one of your tags to a release and you'll be on your way. You can check out how this
 repository uses this action and GitHub releases for an [example](.github/workflows/release.yml).
 
 
