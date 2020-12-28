@@ -57,6 +57,16 @@ Then you can to use the resulting changelog.
 
 [Generating the release notes for a GitHub Release.](.github/workflows/release.yml)
 
+## Open Discussions for feature requests or questions
+
+Issues are for folks who are actively using the action and running into an "issue" (bug, missing doc, etc). 
+
+Feature requests should be in the [discussion section.](https://github.com/metcalfc/changelog-generator/discussions).
+Just to set expectations the bar for a new feature getting added is going to be very high. There is a
+cost to adding features in the development and maintainance of the feature. So if you want to jump in and
+help develop and maintain lets discuss. If you want to fire off feature ideas, go for it. Just understand its
+very likely that without someone willing to take up the task, they won't get implemented. 
+
 ## Keep up-to-date with GitHub Dependabot
 
 Since [Dependabot](https://docs.github.com/en/github/administering-a-repository/keeping-your-actions-up-to-date-with-github-dependabot)
