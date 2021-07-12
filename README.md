@@ -1,6 +1,6 @@
 # Get a changelog between two references
 
-This Action returns a markdown formatted changelog between two git references. There are other projects that use milestones, labeled PRs, etc. Those are just to much work for simple projects.
+This Action returns a markdown formatted changelog between two git references. There are other projects that use milestones, labeled PRs, etc. Those are just too much work for simple projects.
 
 I just wanted a simple way to populate the body of a GitHub Release.
 
@@ -30,7 +30,11 @@ Markdown formatted changelog.
 
 ## Example usage
 
-There are two blocks you will need. First you will need to generate the changelog itself. To get the changelog between the SHA of the commit that triggered the action and the tag of the latest release:
+There are two blocks you will need:
+
+### First block
+
+First you will need to generate the changelog itself. To get the changelog between the SHA of the commit that triggered the action and the tag of the latest release:
 
     - name: Generate changelog
       id: changelog
@@ -38,7 +42,7 @@ There are two blocks you will need. First you will need to generate the changelo
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
 
-Or if you have two specific references you want:
+Or, if you have two specific references you want:
 
     - name: Generate changelog
       id: changelog
@@ -48,7 +52,9 @@ Or if you have two specific references you want:
         head-ref: 'v0.0.2'
         base-ref: 'v0.0.1'
 
-Then you can to use the resulting changelog.
+### Second block
+
+Then you can use the resulting changelog:
 
     - name: Get the changelog
       run: echo "${{ steps.changelog.outputs.changelog }}"
