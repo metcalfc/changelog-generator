@@ -1,12 +1,19 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "13:00"
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: eslint
-    versions:
-    - 7.20.0
+  # Maintain dependencies for npm
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: daily
+      time: '13:00'
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: eslint
+        versions:
+          - 7.20.0
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
