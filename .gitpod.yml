@@ -1,0 +1,6 @@
+tasks:
+  - init: npm install && npm run build
+    command: npm run lint
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
