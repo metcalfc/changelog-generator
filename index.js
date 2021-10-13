@@ -1,20 +1,20 @@
-const core = require('@actions/core')
-const exec = require('@actions/exec')
-const github = require('@actions/github')
+import { getInput, setFailed, setOutput } from '@actions/core'
+import { exec as _exec } from '@actions/exec'
+import { getOctokit, context } from '@actions/github'
 
 const src = __dirname
 
 async function run() {
   try {
-    var headRef = core.getInput('head-ref')
-    var baseRef = core.getInput('base-ref')
-    const myToken = core.getInput('myToken')
-    const octokit = new github.getOctokit(myToken)
-    const { owner, repo } = github.context.repo
+    var headRef = getInput('head-ref')
+    var baseRef = getInput('base-ref')
+    const myToken = getInput('myToken')
+    const octokit = new getOctokit(myToken)
+    const { owner, repo } = context.repo
     const regexp = /^[.A-Za-z0-9_-]*$/
 
     if (!headRef) {
-      headRef = github.context.sha
+      headRef = context.sha
     }
 
     if (!baseRef) {
@@ -25,7 +25,7 @@ async function run() {
       if (latestRelease) {
         baseRef = latestRelease.data.tag_name
       } else {
-        core.setFailed(
+        setFailed(
           `There are no releases on ${owner}/${repo}. Tags are not releases.`
         )
       }
@@ -42,12 +42,12 @@ async function run() {
     ) {
       getChangelog(headRef, baseRef, owner + '/' + repo)
     } else {
-      core.setFailed(
+      setFailed(
         'Branch names must contain only numbers, strings, underscores, periods, and dashes.'
       )
     }
   } catch (error) {
-    core.setFailed(error.message)
+    setFailed(error.message)
   }
 }
 
@@ -68,24 +68,20 @@ async function getChangelog(headRef, baseRef, repoName) {
     }
     options.cwd = './'
 
-    await exec.exec(
-      `${src}/changelog.sh`,
-      [headRef, baseRef, repoName],
-      options
-    )
+    await _exec(`${src}/changelog.sh`, [headRef, baseRef, repoName], options)
 
     if (output) {
       console.log(
         '\x1b[32m%s\x1b[0m',
         `Changelog between ${baseRef} and ${headRef}:\n${output}`
       )
-      core.setOutput('changelog', output)
+      setOutput('changelog', output)
     } else {
-      core.setFailed(err)
+      setFailed(err)
       process.exit(1)
     }
   } catch (err) {
-    core.setFailed(
+    setFailed(
       `Could not generate changelog between references because: ${err.message}`
     )
     process.exit(0)
@@ -95,5 +91,5 @@ async function getChangelog(headRef, baseRef, repoName) {
 try {
   run()
 } catch (error) {
-  core.setFailed(error.message)
+  setFailed(error.message)
 }
