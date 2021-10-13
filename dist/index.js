@@ -7610,31 +7610,79 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
-const core = __nccwpck_require__(2186)
-const exec = __nccwpck_require__(1514)
-const github = __nccwpck_require__(5438)
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1514);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(5438);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
 
 const src = __dirname
 
 async function run() {
   try {
-    var headRef = core.getInput('head-ref')
-    var baseRef = core.getInput('base-ref')
-    const myToken = core.getInput('myToken')
-    const octokit = new github.getOctokit(myToken)
-    const { owner, repo } = github.context.repo
+    var headRef = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('head-ref')
+    var baseRef = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('base-ref')
+    const myToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('myToken')
+    const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
+    const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
     const regexp = /^[.A-Za-z0-9_-]*$/
 
     if (!headRef) {
-      headRef = github.context.sha
+      headRef = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.sha
     }
 
     if (!baseRef) {
@@ -7645,7 +7693,7 @@ async function run() {
       if (latestRelease) {
         baseRef = latestRelease.data.tag_name
       } else {
-        core.setFailed(
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
           `There are no releases on ${owner}/${repo}. Tags are not releases.`
         )
       }
@@ -7662,12 +7710,12 @@ async function run() {
     ) {
       getChangelog(headRef, baseRef, owner + '/' + repo)
     } else {
-      core.setFailed(
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
         'Branch names must contain only numbers, strings, underscores, periods, and dashes.'
       )
     }
   } catch (error) {
-    core.setFailed(error.message)
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message)
   }
 }
 
@@ -7688,24 +7736,20 @@ async function getChangelog(headRef, baseRef, repoName) {
     }
     options.cwd = './'
 
-    await exec.exec(
-      __nccwpck_require__.ab + "changelog.sh",
-      [headRef, baseRef, repoName],
-      options
-    )
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec)(__nccwpck_require__.ab + "changelog.sh", [headRef, baseRef, repoName], options)
 
     if (output) {
       console.log(
         '\x1b[32m%s\x1b[0m',
         `Changelog between ${baseRef} and ${headRef}:\n${output}`
       )
-      core.setOutput('changelog', output)
+      ;(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('changelog', output)
     } else {
-      core.setFailed(err)
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(err)
       process.exit(1)
     }
   } catch (err) {
-    core.setFailed(
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
       `Could not generate changelog between references because: ${err.message}`
     )
     process.exit(0)
@@ -7715,7 +7759,7 @@ async function getChangelog(headRef, baseRef, repoName) {
 try {
   run()
 } catch (error) {
-  core.setFailed(error.message)
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message)
 }
 
 })();
