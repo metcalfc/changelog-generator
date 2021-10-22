@@ -38,28 +38,34 @@ There are two blocks you will need:
 
 First you will need to generate the changelog itself. To get the changelog between the SHA of the commit that triggered the action and the tag of the latest release:
 
-    - name: Generate changelog
-      id: changelog
-      uses: metcalfc/changelog-generator@v1.0.0
-      with:
-        myToken: ${{ secrets.GITHUB_TOKEN }}
+```yaml
+- name: Generate changelog
+  id: changelog
+  uses: metcalfc/changelog-generator@v1.0.0
+  with:
+    myToken: ${{ secrets.GITHUB_TOKEN }}
+```
 
 Or, if you have two specific references you want:
 
-    - name: Generate changelog
-      id: changelog
-      uses: metcalfc/changelog-generator@v1.0.0
-      with:
-        myToken: ${{ secrets.GITHUB_TOKEN }}
-        head-ref: 'v0.0.2'
-        base-ref: 'v0.0.1'
+```yaml
+- name: Generate changelog
+  id: changelog
+  uses: metcalfc/changelog-generator@v1.0.0
+  with:
+    myToken: ${{ secrets.GITHUB_TOKEN }}
+    head-ref: 'v0.0.2'
+    base-ref: 'v0.0.1'
+```
 
 ### Second block
 
 Then you can use the resulting changelog:
 
-    - name: Get the changelog
-      run: echo "${{ steps.changelog.outputs.changelog }}"
+```yaml
+- name: Get the changelog
+  run: echo "${{ steps.changelog.outputs.changelog }}"
+```
 
 ## Example use case
 
