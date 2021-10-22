@@ -16,11 +16,17 @@ jobs:
           head-ref: 'v0.0.2'
           base-ref: 'v0.0.1'
       - name: Get the changelog
-        run: echo "${{ steps.changelog.outputs.changelog }}"
+        run: |
+          cat << "EOF"
+          ${{ steps.changelog.outputs.changelog }}
+          EOF
       - name: Generate changelog from release
         id: release
         uses: metcalfc/changelog-generator@main
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the changelog
-        run: echo "${{ steps.release.outputs.changelog }}"
+        run: |
+          cat << "EOF"
+          ${{ steps.changelog.outputs.changelog }}
+          EOF

@@ -64,7 +64,10 @@ Then you can use the resulting changelog:
 
 ```yaml
 - name: Get the changelog
-  run: echo "${{ steps.changelog.outputs.changelog }}"
+  run: |
+    cat << "EOF"
+    ${{ steps.changelog.outputs.changelog }}
+    EOF
 ```
 
 ## Example use case
