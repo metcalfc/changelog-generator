@@ -20,6 +20,23 @@ jobs:
           cat << "EOF"
           ${{ steps.changelog.outputs.changelog }}
           EOF
+      - name: Modify the changelog
+        id: modified
+        run: |
+          set -o noglob
+          log=$(cat << "EOF" | grep -v Bumping | tac
+          ${{ steps.changelog.outputs.changelog }}
+          EOF
+          )
+          log="${log//'%'/'%25'}"
+          log="${log//$'\n'/'%0A'}"
+          log="${log//$'\r'/'%0D'}"
+          echo "::set-output name=modified::$log"
+      - name: Print the modified changelog
+        run: |
+          cat << "EOF"
+          ${{ steps.modified.outputs.modified }}
+          EOF
       - name: Generate changelog from release
         id: release
         uses: metcalfc/changelog-generator@main
@@ -28,5 +45,5 @@ jobs:
       - name: Get the changelog
         run: |
           cat << "EOF"
-          ${{ steps.changelog.outputs.changelog }}
+          ${{ steps.release.outputs.changelog }}
           EOF
