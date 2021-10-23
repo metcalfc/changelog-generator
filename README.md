@@ -70,19 +70,50 @@ Then you can use the resulting changelog:
     EOF
 ```
 
+### Simple output modifications
+
+Some folks have asked if the action can support changing the output. For example:
+  * Reverse order
+  * Ignore entries that include this string.
+  * Etc
+
+In order to keep this action as simple as possible we aren't planning to add more flags or options. However since the output is just text you can write a command line to do anything you want. In issue #93 we had a user that wanted to list the changelog in reverse order and drop any entries with `gh-pages`. Here is how they can do that but using Bumping as the restrict word because it shows up in this projects history:
+
+```yaml
+      - name: Modify the changelog
+        id: modified
+        run: |
+          set -o noglob
+          log=$(cat << "EOF" | grep -v Bumping | tac
+          ${{ steps.changelog.outputs.changelog }}
+          EOF
+          )
+          log="${log//'%'/'%25'}"
+          log="${log//$'\n'/'%0A'}"
+          log="${log//$'\r'/'%0D'}"
+          echo "::set-output name=modified::$log"
+      - name: Print the modified changelog
+        run: |
+          cat << "EOF"
+          ${{ steps.modified.outputs.modified }}
+          EOF
+```
+
+You might be wondering about that set of escaping for the `log`. Thats because GitHub Actions doesn't support multiline output. Read more [here](https://github.community/t/set-output-truncates-multiline-strings/16852).
+
 ## Example use case
 
 [Generating the release notes for a GitHub Release.](.github/workflows/release.yml)
 
 ## Open Discussions for feature requests or questions
 
-Issues are for folks who are actively using the action and running into an "issue" (bug, missing doc, etc). 
+Issues are for folks who are actively using the action and running into an "issue" (bug, missing doc, etc).
 
 Feature requests should be in the [discussion section.](https://github.com/metcalfc/changelog-generator/discussions).
 Just to set expectations the bar for a new feature getting added is going to be very high. There is a
 cost to adding features in the development and maintainance of the feature. So if you want to jump in and
 help develop and maintain lets discuss. If you want to fire off feature ideas, go for it. Just understand its
-very likely that without someone willing to take up the task, they won't get implemented. 
+very likely that without someone willing to take up the task, they won't get implemented.
 
 ## Keep up-to-date with GitHub Dependabot
 
