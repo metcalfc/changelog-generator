@@ -21,7 +21,7 @@ then
 fi
 
 log=$(git log "${base_ref}...${head_ref}" \
-  --pretty=format:"* [%h](http://github.com/${repo_url}/commit/%H) - %s" \
+  --pretty=format:"- [%h](http://github.com/${repo_url}/commit/%H) - %s" \
   --reverse)
 
 if [ -z "$log" ];
