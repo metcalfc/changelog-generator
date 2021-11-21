@@ -9,6 +9,7 @@ async function run() {
     var headRef = getInput('head-ref')
     var baseRef = getInput('base-ref')
     const myToken = getInput('myToken')
+    const reverse = getInput('reverse')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
     const regexp = /^[.A-Za-z0-9_-]*$/
@@ -40,7 +41,7 @@ async function run() {
       regexp.test(headRef) &&
       regexp.test(baseRef)
     ) {
-      getChangelog(headRef, baseRef, owner + '/' + repo)
+      getChangelog(headRef, baseRef, owner + '/' + repo, reverse)
     } else {
       setFailed(
         'Branch names must contain only numbers, strings, underscores, periods, and dashes.'
@@ -51,7 +52,7 @@ async function run() {
   }
 }
 
-async function getChangelog(headRef, baseRef, repoName) {
+async function getChangelog(headRef, baseRef, repoName, reverse) {
   try {
     let output = ''
     let err = ''
@@ -68,7 +69,11 @@ async function getChangelog(headRef, baseRef, repoName) {
     }
     options.cwd = './'
 
-    await _exec(`${src}/changelog.sh`, [headRef, baseRef, repoName], options)
+    await _exec(
+      `${src}/changelog.sh`,
+      [headRef, baseRef, repoName, reverse],
+      options
+    )
 
     if (output) {
       console.log(

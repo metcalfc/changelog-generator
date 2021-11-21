@@ -5,6 +5,11 @@ head_ref=$1
 base_ref=$2
 repo_url=$3
 
+reverse = ""
+if [ $strval1 != "true" ]; then
+  reverse = "--reverse"
+fi
+
 # By default a GitHub action checkout is shallow. Get all the tags, branches,
 # and history. Redirect output to standard error which we can collect in the
 # action.
@@ -22,7 +27,7 @@ fi
 
 log=$(git log "${base_ref}...${head_ref}" \
   --pretty=format:"- [%h](http://github.com/${repo_url}/commit/%H) - %s" \
-  --reverse)
+  ${reverse})
 
 if [ -z "$log" ];
 then
