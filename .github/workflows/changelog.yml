@@ -15,6 +15,22 @@ jobs:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'v0.0.2'
           base-ref: 'v0.0.1'
+      - name: Reverse the generated changelog
+        id: changelog-rev
+        uses: metcalfc/changelog-generator@main
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: 'v0.0.2'
+          base-ref: 'v0.0.1'
+          reverse: 'true'
+      - name: Explicitly do not reverse the generated changelog
+        id: changelog-notrev
+        uses: metcalfc/changelog-generator@main
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: 'v0.0.2'
+          base-ref: 'v0.0.1'
+          reverse: 'false'
       - name: Get the changelog
         run: |
           cat << "EOF"
