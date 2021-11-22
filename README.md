@@ -73,7 +73,7 @@ Then you can use the resulting changelog:
 ### Simple output modifications
 
 Some folks have asked if the action can support changing the output. For example:
-  * Reverse order
+  * Reverse order *UPDATE* as of 2021/11/22 chronological is the default and it can be reversed by setting `reverse: 'true'` in the workflow.
   * Ignore entries that include this string.
   * Etc
 
