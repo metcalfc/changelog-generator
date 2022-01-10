@@ -47,7 +47,7 @@
     "@actions/github": "^5.0.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.33.0",
+    "@vercel/ncc": "^0.33.1",
     "eslint": "^8.4.1",
     "isexe": "^2.0.0",
     "pre-commit": "^1.2.2",
