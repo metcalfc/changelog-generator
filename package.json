@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/metcalfc/changelog-generator#readme",
   "dependencies": {
-    "@actions/core": "^1.8.0",
+    "@actions/core": "^1.8.2",
     "@actions/exec": "^1.1.1",
     "@actions/github": "^5.0.1"
   },
