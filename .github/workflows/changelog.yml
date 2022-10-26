@@ -47,7 +47,7 @@ jobs:
           log="${log//'%'/'%25'}"
           log="${log//$'\n'/'%0A'}"
           log="${log//$'\r'/'%0D'}"
-          echo "::set-output name=modified::$log"
+          echo "modified=$log" >> $GITHUB_OUTPUT
       - name: Print the modified changelog
         run: |
           cat << "EOF"
