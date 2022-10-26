@@ -22,7 +22,7 @@ outputs:
   changelog:
     description: 'Markdown formatted changelog'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   icon: 'list'
