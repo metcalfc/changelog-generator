@@ -6,7 +6,7 @@ This Action returns a markdown formatted changelog between two git references. T
 
 I just wanted a simple way to populate the body of a GitHub Release.
 
-<a href="https://github.com/metcalfc/changelog-generator/releases/tag/v3.0.0"><img alt="Example Release Notes" src="./release-notes.png" width="400"></a>
+<a href="https://github.com/metcalfc/changelog-generator/releases/tag/v4.0.0"><img alt="Example Release Notes" src="./release-notes.png" width="400"></a>
 
 ## Inputs
 
@@ -41,7 +41,7 @@ First you will need to generate the changelog itself. To get the changelog betwe
 ```yaml
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v3.0.0
+  uses: metcalfc/changelog-generator@v4.0.0
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -51,7 +51,7 @@ Or, if you have two specific references you want:
 ```yaml
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v3.0.0
+  uses: metcalfc/changelog-generator@v4.0.0
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'v0.0.2'
