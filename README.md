@@ -91,11 +91,12 @@ In order to keep this action as simple as possible we aren't planning to add mor
           log="${log//'%'/'%25'}"
           log="${log//$'\n'/'%0A'}"
           log="${log//$'\r'/'%0D'}"
-          echo "::set-output name=modified::$log"
+          echo "log=$log" >> $GITHUB_OUTPUT
+
       - name: Print the modified changelog
         run: |
           cat << "EOF"
-          ${{ steps.modified.outputs.modified }}
+          ${{ steps.modified.outputs.log }}
           EOF
 ```
 
