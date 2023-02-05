@@ -12,7 +12,7 @@ async function run() {
     const reverse = getInput('reverse')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
-    const regexp = /^[.A-Za-z0-9_-]*$/
+    const regexp = /^[.A-Za-z0-9_/-]*$/
 
     if (!headRef) {
       headRef = context.sha
