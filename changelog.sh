@@ -31,6 +31,8 @@ fi
 
 # git log test/branch
 
+git checkout "${base_ref}"
+
 # Bash quoting will get you. Do not quote the extra_flags. If its null
 # we want it to disappear. If you quote it, it will go to git as an ""
 # and thats not a valid arg.
