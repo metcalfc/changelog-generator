@@ -11643,7 +11643,7 @@ async function run() {
     const reverse = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reverse')
     const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
-    const regexp = /^[.A-Za-z0-9_-]*$/
+    const regexp = /^[.A-Za-z0-9_/-]*$/
 
     if (!headRef) {
       headRef = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.sha
@@ -11675,7 +11675,7 @@ async function run() {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse)
     } else {
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        'Branch names must contain only numbers, strings, underscores, periods, and dashes.'
+        'Branch names must contain only numbers, strings, underscores, periods, forward slash, and dashes.'
       )
     }
   } catch (error) {
@@ -11729,7 +11729,6 @@ try {
 } catch (error) {
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message)
 }
-
 })();
 
 module.exports = __webpack_exports__;
