@@ -19,7 +19,7 @@ fi
 #   dir=$(basename "${d}")
 #   git fetch --no-tags --prune --depth=1 origin +refs/heads/"${dir}"/*:refs/remotes/origin/"${dir}"/* 1>&2
 # done
-# git fetch --prune --unshallow 1>&2
+git fetch --prune --unshallow origin 1>&2
 
 # if folks don't have a base ref to compare against just use the initial
 # commit. This will show all the changes since the beginning but I can't
@@ -31,7 +31,7 @@ fi
 
 # git log test/branch
 
-git checkout "${base_ref}"
+# git checkout "${base_ref}"
 
 # Bash quoting will get you. Do not quote the extra_flags. If its null
 # we want it to disappear. If you quote it, it will go to git as an ""
