@@ -11641,9 +11641,10 @@ async function run() {
     var baseRef = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('base-ref')
     const myToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('myToken')
     const reverse = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reverse')
+    const fetch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('fetch')
     const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
-    const regexp = /^[.A-Za-z0-9_-]*$/
+    const regexp = /^[.A-Za-z0-9_/-]*$/
 
     if (!headRef) {
       headRef = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.sha
@@ -11672,10 +11673,10 @@ async function run() {
       regexp.test(headRef) &&
       regexp.test(baseRef)
     ) {
-      getChangelog(headRef, baseRef, owner + '/' + repo, reverse)
+      getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        'Branch names must contain only numbers, strings, underscores, periods, and dashes.'
+        'Branch names must contain only numbers, strings, underscores, periods, forward slashes, and dashes.'
       )
     }
   } catch (error) {
@@ -11683,7 +11684,7 @@ async function run() {
   }
 }
 
-async function getChangelog(headRef, baseRef, repoName, reverse) {
+async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
   try {
     let output = ''
     let err = ''
@@ -11702,7 +11703,7 @@ async function getChangelog(headRef, baseRef, repoName, reverse) {
 
     await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec)(
       __nccwpck_require__.ab + "changelog.sh",
-      [headRef, baseRef, repoName, reverse],
+      [headRef, baseRef, repoName, reverse, fetch],
       options
     )
 
