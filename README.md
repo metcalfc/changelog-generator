@@ -24,6 +24,14 @@ The name of the head reference. Default `${{github.sha}}`.
 
 The name of the second branch. Defaults to the `tag_name` of the latest GitHub release. *This must be a GitHub release. Git tags or branches will not work.*
 
+### `reverse`
+
+Whether the order of commits should be printed in reverse. Default: 'false'
+
+### `fetch`
+
+Whether this action should pull in all other branches and refs. Default: 'true'
+
 ## Outputs
 
 ### `changelog`
@@ -56,6 +64,25 @@ Or, if you have two specific references you want:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'v0.0.2'
     base-ref: 'v0.0.1'
+```
+
+If you want to point to a branch containing forward slashes (https://github.com/metcalfc/changelog-generator/issues/179) do the following:
+
+```yaml
+
+# let the checkout action do the fetching
+- uses: actions/checkout@v3
+  with:
+    fetch-depth: 0
+
+- name: Generate changelog
+  id: changelog
+  uses: nielstenboom/changelog-generator@main
+  with:
+    myToken: ${{ secrets.GITHUB_TOKEN }}
+    head-ref: 'origin/my/branch/with/slashes' #add 'origin/` in front of your branch name
+    base-ref: 'v1.0.0'
+    fetch: false
 ```
 
 ### Second block
