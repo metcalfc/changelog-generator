@@ -45,7 +45,7 @@ async function run() {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       setFailed(
-        'Branch names must contain only numbers, strings, underscores, periods, forward slash, and dashes.'
+        'Branch names must contain only numbers, strings, underscores, periods, forward slashes, and dashes.'
       )
     }
   } catch (error) {
