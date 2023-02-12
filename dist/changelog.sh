@@ -29,8 +29,6 @@ then
   base_ref=$(git rev-list --max-parents=0 HEAD)
 fi
 
-# git log test/branch
-
 # Bash quoting will get you. Do not quote the extra_flags. If its null
 # we want it to disappear. If you quote it, it will go to git as an ""
 # and thats not a valid arg.
