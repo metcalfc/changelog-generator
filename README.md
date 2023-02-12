@@ -77,7 +77,7 @@ If you want to point to a branch containing forward slashes (https://github.com/
 
 - name: Generate changelog
   id: changelog
-  uses: nielstenboom/changelog-generator@main
+  uses: metcalfc/changelog-generator@v4.0.1 #TODO: bump this after release
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'origin/my/branch/with/slashes' #add 'origin/` in front of your branch name
