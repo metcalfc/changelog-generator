@@ -18,6 +18,10 @@ inputs:
     description: 'Git log is chronological order by default. Set to true to reverse chronological order. '
     default: 'false'
     required: false
+  fetch:
+    description: 'Whether to have this action fetch all other branches and tags'
+    default: 'true'
+    required: false
 outputs:
   changelog:
     description: 'Markdown formatted changelog'
