@@ -16,12 +16,8 @@ fetch=$5
 # and history. Redirect output to standard error which we can collect in the
 # action.
 if [ "$fetch" == "true" ]; then
-  git fetch --depth=2 origin +refs/tags/*:refs/tags/* 1>&2
+  git fetch --depth=1 origin +refs/tags/*:refs/tags/* 1>&2
   git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/* 1>&2
-  for d in .git/refs/heads/*; do
-    dir=$(basename "${d}")
-    git fetch --no-tags --prune --depth=1 origin +refs/heads/"${dir}"/*:refs/remotes/origin/"${dir}"/* 1>&2
-  done
   git fetch --prune --unshallow 1>&2
 fi
 
