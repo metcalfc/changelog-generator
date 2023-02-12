@@ -30,7 +30,7 @@ Whether the order of commits should be printed in reverse. Default: 'false'
 
 ### `fetch`
 
-Whether this action should pull in all other branches and refs. Default: 'true'
+Whether this action should pull in all other branches and tags. Default: 'true'
 
 ## Outputs
 
