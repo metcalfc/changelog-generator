@@ -1,4 +1,4 @@
-name: test
+name: Test the changelog action
 on: [push]
 
 jobs:
