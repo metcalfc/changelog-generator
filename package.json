@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.36.1",
-    "eslint": "^8.34.0",
+    "eslint": "^8.36.0",
     "isexe": "^2.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.4",
