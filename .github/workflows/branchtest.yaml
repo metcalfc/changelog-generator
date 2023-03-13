@@ -1,0 +1,27 @@
+name: Test branches with slash in name
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@main
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: 'origin/test/branch' #add 'origin/` in front of your branch name
+          base-ref: 'v1.0.0'
+          fetch: false
+
+      - name: Get the changelog
+        run: |
+          cat << "EOF"
+          ${{ steps.changelog.outputs.changelog }}
+          EOF
+
