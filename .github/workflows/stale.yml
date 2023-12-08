@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Close Stale Issues
-        uses: actions/stale@v8
+        uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: 'This issue has not had any activity in 30 days. Marking it stale. It will be closed in 14 days.'
