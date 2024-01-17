@@ -51,7 +51,7 @@
     "eslint": "^8.55.0",
     "isexe": "^3.1.1",
     "pre-commit": "^1.2.2",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.4",
     "replace": "^1.2.2"
   }
 }
