@@ -9,9 +9,9 @@ async function run() {
     var headRef = getInput('head-ref')
     var baseRef = getInput('base-ref')
     const myToken = getInput('myToken')
-    const reverse = getInput('reverse').toLower() === 'true'
-    const fetch = getInput('fetch').toLower() === 'true'
-    const headRefCommitsOnly = getInput('headRefCommitsOnly').toLower() === 'true'
+    const reverse = getInput('reverse').toLowerCase() === 'true'
+    const fetch = getInput('fetch').toLowerCase() === 'true'
+    const headRefCommitsOnly = getInput('headRefCommitsOnly').toLowerCase() === 'true'
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
     const regexp = /^[.A-Za-z0-9_/-]*$/

@@ -32088,9 +32088,9 @@ async function run() {
     var headRef = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('head-ref')
     var baseRef = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('base-ref')
     const myToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('myToken')
-    const reverse = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reverse').toLower() === 'true'
-    const fetch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('fetch').toLower() === 'true'
-    const headRefCommitsOnly = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('headRefCommitsOnly').toLower() === 'true'
+    const reverse = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reverse').toLowerCase() === 'true'
+    const fetch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('fetch').toLowerCase() === 'true'
+    const headRefCommitsOnly = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('headRefCommitsOnly').toLowerCase() === 'true'
     const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
     const regexp = /^[.A-Za-z0-9_/-]*$/
