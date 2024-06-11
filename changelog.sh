@@ -4,10 +4,10 @@ set -eou pipefail
 head_ref=$1
 shift
 
-base_ref=$2
+base_ref=$1
 shift
 
-repo_url=$3
+repo_url=$1
 shift
 
 fetch=false;
@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     --reverse)
       extra_flags="${extra_flags} --reverse"
-      shift # past argument
+      shift
       ;;
     --fetch)
       fetch=true;
@@ -26,7 +26,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --head_ref_only)
       compare_operator=".."
-      shift # past value
+      shift
       ;;
     -*|--*)
       echo "Unknown option $1"
