@@ -2,15 +2,38 @@
 set -eou pipefail
 
 head_ref=$1
+shift
+
 base_ref=$2
+shift
+
 repo_url=$3
+shift
+
+fetch=false;
+compare_operator="..."
 extra_flags=""
 
-if [ "$4" == "true" ]; then
-  extra_flags='--reverse'
-fi
-
-fetch=$5
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --reverse)
+      extra_flags="${extra_flags} --reverse"
+      shift # past argument
+      ;;
+    --fetch)
+      fetch=true;
+      shift;
+      ;;
+    --head_ref_only)
+      compare_operator=".."
+      shift # past value
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+  esac
+done
 
 # By default a GitHub action checkout is shallow. Get all the tags, branches,
 # and history. Redirect output to standard error which we can collect in the
@@ -29,10 +52,12 @@ then
   base_ref=$(git rev-list --max-parents=0 HEAD)
 fi
 
+
+
 # Bash quoting will get you. Do not quote the extra_flags. If its null
 # we want it to disappear. If you quote it, it will go to git as an ""
 # and thats not a valid arg.
-log=$(git log "${base_ref}"..."${head_ref}" \
+log=$(git log "${base_ref}""${compare_operator}""${head_ref}" \
   --pretty=format:"- [%h](http://github.com/${repo_url}/commit/%H) - %s" \
   ${extra_flags})
 

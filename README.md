@@ -22,6 +22,11 @@ The name of the head reference. Default `${{github.sha}}`.
 
 The name of the second branch. Defaults to the `tag_name` of the latest GitHub release. *This must be a GitHub release. Git tags or branches will not work.*
 
+### `headRefCommitsOnly`
+
+Show ONLY the commits that `head-ref` has that `base-ref` doesn't have (uses `..`).
+By default, will show you both the commits that `head-ref` has and that `base-ref` doesn't have, and the commits that `base-ref` has that `head-ref` doesn't have (uses `...`).
+
 ### `reverse`
 
 Whether the order of commits should be printed in reverse. Default: 'false'

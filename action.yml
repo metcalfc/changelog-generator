@@ -14,6 +14,10 @@ inputs:
     description: 'The name of the base reference'
     default: ''
     required: false
+  headRefCommitsOnly:
+    description: 'Use ".." comparision instead of "..."'
+    default: 'false'
+    required: false
   reverse:
     description: 'Git log is chronological order by default. Set to true to reverse chronological order. '
     default: 'false'
