@@ -25,3 +25,10 @@ jobs:
           name: Release ${{ github.ref }}
           body: ${{ steps.changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Major Version Tag
+        run: |
+          MAJOR_VERSION=v$(echo "${{ github.ref }}" | grep -oE '^v[0-9]+')
+          git tag -f $MAJOR_VERSION
+          git push origin $MAJOR_VERSION --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
