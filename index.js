@@ -6,8 +6,8 @@ const src = __dirname
 
 async function run() {
   try {
-    var headRef = getInput('head-ref')
-    var baseRef = getInput('base-ref')
+    let headRef = getInput('head-ref')
+    let baseRef = getInput('base-ref')
     const myToken = getInput('myToken')
     const reverse = getInput('reverse')
     const fetch = getInput('fetch')
