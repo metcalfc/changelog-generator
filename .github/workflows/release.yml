@@ -22,12 +22,12 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           body: ${{ steps.changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update Major Version Tag
         run: |
-          MAJOR_VERSION=$(echo "${{ github.ref }}" | grep -oE 'v[0-9]+')
+          MAJOR_VERSION=$(echo "${{ github.ref_name }}" | grep -oE 'v[0-9]+')
           git tag -f $MAJOR_VERSION
           git push origin $MAJOR_VERSION --force
         env:
