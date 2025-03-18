@@ -13,6 +13,7 @@
     "postversion": "git push && git push --tags",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit": "npm run build && git add dist/",
+    "refme": "npm exec gh-refme -- convert ./.github/workflows/*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./SECURITY.md ./.github/workflows/*yml"
   },
@@ -20,6 +21,7 @@
     "precommit-msg",
     "lint",
     "format-check",
+    "refme",
     "precommit"
   ],
   "repository": {
@@ -47,9 +49,10 @@
     "@actions/github": "^6.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@vercel/ncc": "^0.38.3",
     "eslint": "^9.22.0",
-    "@eslint/js": "^9.22.0",
+    "gh-refme": "^1.5.0",
     "globals": "^16.0.0",
     "isexe": "^3.1.1",
     "pre-commit": "^1.2.2",
