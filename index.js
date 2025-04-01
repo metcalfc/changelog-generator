@@ -1,6 +1,6 @@
 import { getInput, setFailed, setOutput } from '@actions/core'
 import { exec as _exec } from '@actions/exec'
-import { getOctokit, context } from '@actions/github'
+import { context, getOctokit } from '@actions/github'
 
 const src = __dirname
 
@@ -13,7 +13,7 @@ async function run() {
     const fetch = getInput('fetch')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
-    const regexp = /^[.A-Za-z0-9_/-]*$/
+    const regexp = /^[.A-Za-z0-9_/\-+]*$/
 
     if (!headRef) {
       headRef = context.sha
@@ -45,7 +45,7 @@ async function run() {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       setFailed(
-        'Branch names must contain only numbers, strings, underscores, periods, forward slashes, and dashes.'
+        'Git ref names must contain only numbers, strings, underscores, periods, forward slashes, pluses, and dashes.'
       )
     }
   } catch (error) {
