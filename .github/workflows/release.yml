@@ -3,7 +3,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v4.5.0
+      - 'v*' # Push events to matching v*, i.e. v1.0, v4.6.0
 
 jobs:
   release:
@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # was: actions/checkout@v4
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@7613b906189aa1c8599753c6583f1925a78b9554 # was: metcalfc/changelog-generator@v4.5.0
+        uses: metcalfc/changelog-generator@7613b906189aa1c8599753c6583f1925a78b9554 # was: metcalfc/changelog-generator@v4.6.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release

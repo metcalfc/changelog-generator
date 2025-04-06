@@ -31891,7 +31891,7 @@ async function run() {
     const fetch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('fetch')
     const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
-    const regexp = /^[.A-Za-z0-9_/-]*$/
+    const regexp = /^[.A-Za-z0-9_/\-+]*$/
 
     if (!headRef) {
       headRef = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.sha
@@ -31923,7 +31923,7 @@ async function run() {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        'Branch names must contain only numbers, strings, underscores, periods, forward slashes, and dashes.'
+        'Git ref names must contain only numbers, strings, underscores, periods, forward slashes, pluses, and dashes.'
       )
     }
   } catch (error) {
