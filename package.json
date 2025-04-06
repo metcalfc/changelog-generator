@@ -55,7 +55,7 @@
     "gh-refme": "^1.5.0",
     "globals": "^16.0.0",
     "isexe": "^3.1.1",
-    "pre-commit": "^1.2.2",
+    "pre-commit": "git://github.com/metcalfc/pre-commit.git",
     "prettier": "^3.5.3",
     "replace": "^1.2.2"
   }
