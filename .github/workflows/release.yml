@@ -31,4 +31,4 @@ jobs:
           git tag -f $MAJOR_VERSION
           git push origin $MAJOR_VERSION --force
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
