@@ -19,7 +19,7 @@ jobs:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         id: create_release
-        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # was: ncipollo/release-action@v1
+        uses: ncipollo/release-action@1c89adf39833729d8f85a31ccbc451b078733c80 # was: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref }}
           name: Release ${{ github.ref_name }}
