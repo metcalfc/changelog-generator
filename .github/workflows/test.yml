@@ -1,4 +1,6 @@
 name: Test the changelog action
+permissions:
+  contents: read
 on: [push]
 
 jobs:
