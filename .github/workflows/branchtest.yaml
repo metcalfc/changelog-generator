@@ -1,5 +1,7 @@
 name: Test branches with slash in name
 on: [push]
+permissions:
+  contents: read
 
 jobs:
   test:
