@@ -3,6 +3,9 @@ permissions:
   contents: read
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   schedule:
     #        ┌───────────── minute (0 - 59)
