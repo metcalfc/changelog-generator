@@ -13,7 +13,7 @@ jobs:
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # was: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # was: actions/checkout@v4
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # was: metcalfc/changelog-generator@v4.6.2
