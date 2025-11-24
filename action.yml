@@ -22,6 +22,10 @@ inputs:
     description: 'Whether to have this action fetch all other branches and tags'
     default: 'true'
     required: false
+  mentions:
+    description: 'Whether to append the author handle to each changelog entry'
+    default: 'false'
+    required: false
 outputs:
   changelog:
     description: 'Markdown formatted changelog'
