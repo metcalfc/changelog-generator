@@ -11,6 +11,12 @@ if [ "$4" == "true" ]; then
 fi
 
 fetch=$5
+mentions=$6
+log_format="- [%h](http://github.com/${repo_url}/commit/%H) - %s"
+
+if [ "$mentions" == "true" ]; then
+  log_format="${log_format} by @%an"
+fi
 
 # By default a GitHub action checkout is shallow. Get all the tags, branches,
 # and history. Redirect output to standard error which we can collect in the
@@ -33,7 +39,7 @@ fi
 # we want it to disappear. If you quote it, it will go to git as an ""
 # and thats not a valid arg.
 log=$(git log "${base_ref}"..."${head_ref}" \
-  --pretty=format:"- [%h](http://github.com/${repo_url}/commit/%H) - %s" \
+  --pretty=format:"${log_format}" \
   ${extra_flags})
 
 if [ -z "$log" ];
