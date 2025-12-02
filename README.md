@@ -30,6 +30,10 @@ Whether the order of commits should be printed in reverse. Default: 'false'
 
 Whether this action should pull in all other branches and tags. Default: 'true'
 
+### `mentions`
+
+Whether to append the commit author handle after each entry as `by @username`. Default: 'false'
+
 ## Outputs
 
 ### `changelog`

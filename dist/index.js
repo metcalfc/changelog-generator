@@ -31890,6 +31890,7 @@ async function run() {
     const myToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('myToken')
     const reverse = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reverse')
     const fetch = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('fetch')
+    const mentions = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('mentions')
     const octokit = new _actions_github__WEBPACK_IMPORTED_MODULE_2__.getOctokit(myToken)
     const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo
     const regexp = /^[.A-Za-z0-9_/\-+]*$/
@@ -31921,7 +31922,14 @@ async function run() {
       regexp.test(headRef) &&
       regexp.test(baseRef)
     ) {
-      getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
+      getChangelog(
+        headRef,
+        baseRef,
+        owner + '/' + repo,
+        reverse,
+        fetch,
+        mentions
+      )
     } else {
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
         'Git ref names must contain only numbers, strings, underscores, periods, forward slashes, pluses, and dashes.'
@@ -31932,7 +31940,14 @@ async function run() {
   }
 }
 
-async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
+async function getChangelog(
+  headRef,
+  baseRef,
+  repoName,
+  reverse,
+  fetch,
+  mentions
+) {
   try {
     let output = ''
     let err = ''
@@ -31951,7 +31966,7 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
 
     await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec)(
       __nccwpck_require__.ab + "changelog.sh",
-      [headRef, baseRef, repoName, reverse, fetch],
+      [headRef, baseRef, repoName, reverse, fetch, mentions],
       options
     )
 

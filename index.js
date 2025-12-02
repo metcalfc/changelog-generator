@@ -11,6 +11,7 @@ async function run() {
     const myToken = getInput('myToken')
     const reverse = getInput('reverse')
     const fetch = getInput('fetch')
+    const mentions = getInput('mentions')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
     const regexp = /^[.A-Za-z0-9_/\-+]*$/
@@ -42,7 +43,14 @@ async function run() {
       regexp.test(headRef) &&
       regexp.test(baseRef)
     ) {
-      getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
+      getChangelog(
+        headRef,
+        baseRef,
+        owner + '/' + repo,
+        reverse,
+        fetch,
+        mentions
+      )
     } else {
       setFailed(
         'Git ref names must contain only numbers, strings, underscores, periods, forward slashes, pluses, and dashes.'
@@ -53,7 +61,14 @@ async function run() {
   }
 }
 
-async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
+async function getChangelog(
+  headRef,
+  baseRef,
+  repoName,
+  reverse,
+  fetch,
+  mentions
+) {
   try {
     let output = ''
     let err = ''
@@ -72,7 +87,7 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
 
     await _exec(
       `${src}/changelog.sh`,
-      [headRef, baseRef, repoName, reverse, fetch],
+      [headRef, baseRef, repoName, reverse, fetch, mentions],
       options
     )
 
