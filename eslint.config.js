@@ -25,5 +25,14 @@ module.exports = [
       semi: ['error', 'never'],
       quotes: ['error', 'single', { avoidEscape: true }]
     }
+  },
+  {
+    files: ['tests/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest
+      }
+    }
   }
 ]

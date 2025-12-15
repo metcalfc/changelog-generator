@@ -44,7 +44,7 @@ check: check-node
 # Run tests
 test: check-node
 	@echo "🧪 Running tests..."
-	@npm test || echo "⚠️  No tests available. Consider adding tests."
+	@npm test
 
 # Build the project
 build: check-node
