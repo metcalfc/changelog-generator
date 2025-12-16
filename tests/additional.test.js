@@ -1,4 +1,4 @@
-const { execSync } = require('child_process')
+const { execSync, execFileSync } = require('child_process')
 const path = require('path')
 
 describe('Additional Changelog Tests', () => {
@@ -11,8 +11,9 @@ describe('Additional Changelog Tests', () => {
       }).trim()
 
       // Run with empty base_ref
-      const output = execSync(
-        `${changelogScript} "${headRef}" "" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, '', 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -53,8 +54,9 @@ describe('Additional Changelog Tests', () => {
       ]
 
       repoFormats.forEach(repoUrl => {
-        const output = execSync(
-          `${changelogScript} "${headRef}" "${baseRef}" "${repoUrl}" false false`,
+        const output = execFileSync(
+          changelogScript,
+          [headRef, baseRef, repoUrl, 'false', 'false'],
           {
             encoding: 'utf-8',
             cwd: path.join(__dirname, '..')
@@ -84,8 +86,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[commits.length - 1]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -119,8 +122,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[commits.length - 1]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -155,8 +159,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[2]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -190,8 +195,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[1]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -223,8 +229,9 @@ describe('Additional Changelog Tests', () => {
       const baseRef = commits[1]
 
       // Run with fetch=false - should not attempt to fetch
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -260,8 +267,9 @@ describe('Additional Changelog Tests', () => {
 
       flagCombinations.forEach(([reverse, fetch]) => {
         try {
-          const output = execSync(
-            `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" ${reverse} ${fetch}`,
+          const output = execFileSync(
+            changelogScript,
+            [headRef, baseRef, 'metcalfc/changelog-generator', reverse, fetch],
             {
               encoding: 'utf-8',
               cwd: path.join(__dirname, '..'),
@@ -297,8 +305,15 @@ describe('Additional Changelog Tests', () => {
       const invalidRef = 'definitely-not-a-valid-ref-' + Date.now()
 
       try {
-        execSync(
-          `${changelogScript} "${headRef}" "${invalidRef}" "metcalfc/changelog-generator" false false 2>/dev/null`,
+        execFileSync(
+          changelogScript,
+          [
+            headRef,
+            invalidRef,
+            'metcalfc/changelog-generator',
+            'false',
+            'false'
+          ],
           {
             encoding: 'utf-8',
             cwd: path.join(__dirname, '..'),
@@ -330,8 +345,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[1]
       const baseRef = commits[0]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -365,16 +381,18 @@ describe('Additional Changelog Tests', () => {
       const baseRef = commits[1]
 
       // Run twice with same inputs
-      const output1 = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output1 = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
         }
       ).trim()
 
-      const output2 = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output2 = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -400,8 +418,9 @@ describe('Additional Changelog Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[1]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')

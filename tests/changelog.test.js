@@ -1,4 +1,4 @@
-const { execSync } = require('child_process')
+const { execSync, execFileSync } = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
@@ -78,8 +78,9 @@ describe('Changelog Generator Tests', () => {
       const baseRef = commits[commits.length - 1]
 
       // Run the changelog script
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -103,8 +104,9 @@ describe('Changelog Generator Tests', () => {
       }).trim()
 
       // Run the changelog script with the same ref
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${headRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, headRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -133,8 +135,9 @@ describe('Changelog Generator Tests', () => {
       const olderTag = tags[1]
 
       // Run the changelog script
-      const output = execSync(
-        `${changelogScript} "${newerTag}" "${olderTag}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [newerTag, olderTag, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -162,8 +165,9 @@ describe('Changelog Generator Tests', () => {
       const baseRef = commits[commits.length - 1]
 
       // Run without reverse
-      const normalOutput = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const normalOutput = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -171,8 +175,9 @@ describe('Changelog Generator Tests', () => {
       ).trim()
 
       // Run with reverse
-      const reversedOutput = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" true false`,
+      const reversedOutput = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'true', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
@@ -208,8 +213,9 @@ describe('Changelog Generator Tests', () => {
       const headRef = commits[0]
       const baseRef = commits[1]
 
-      const output = execSync(
-        `${changelogScript} "${headRef}" "${baseRef}" "metcalfc/changelog-generator" false false`,
+      const output = execFileSync(
+        changelogScript,
+        [headRef, baseRef, 'metcalfc/changelog-generator', 'false', 'false'],
         {
           encoding: 'utf-8',
           cwd: path.join(__dirname, '..')
