@@ -45,7 +45,7 @@
   "homepage": "https://github.com/metcalfc/changelog-generator#readme",
   "dependencies": {
     "@actions/core": "^2.0.2",
-    "@actions/exec": "^1.1.1",
+    "@actions/exec": "^2.0.0",
     "@actions/github": "^7.0.0"
   },
   "devDependencies": {
