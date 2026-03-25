@@ -69,13 +69,13 @@ If you want to point to a branch containing forward slashes (https://github.com/
 ```yaml
 
 # let the checkout action do the fetching
-- uses: actions/checkout@v3
+- uses: actions/checkout@v6
   with:
     fetch-depth: 0
 
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v4.7.0 #TODO: bump this after release
+  uses: metcalfc/changelog-generator@v4.7.0
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'origin/my/branch/with/slashes' #add 'origin/` in front of your branch name
