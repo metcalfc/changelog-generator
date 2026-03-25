@@ -48,6 +48,9 @@
     "@actions/exec": "^3.0.0",
     "@actions/github": "^9.0.0"
   },
+  "overrides": {
+    "minimatch": ">=3.1.3"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@vercel/ncc": "^0.38.4",
