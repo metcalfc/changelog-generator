@@ -9,6 +9,8 @@ jobs:
   release:
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     runs-on: ubuntu-latest
     steps:
       # To use this repository's private action, you must check out the repository
@@ -19,6 +21,10 @@ jobs:
         uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # was: metcalfc/changelog-generator@v4.6.2
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # was: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/index.js'
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # was: ncipollo/release-action@v1

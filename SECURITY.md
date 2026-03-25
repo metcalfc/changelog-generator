@@ -9,4 +9,6 @@
 
 ## Reporting a Vulnerability
 
-File an issue.
+**Please do not report security vulnerabilities through public GitHub issues.**
+
+Use [GitHub's private vulnerability reporting](https://github.com/metcalfc/changelog-generator/security/advisories/new) to submit a report. You should receive a response within 48 hours.
