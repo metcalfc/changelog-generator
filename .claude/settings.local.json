@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "allow": ["Bash(gh pr checks:*)", "Bash(npm outdated:*)", "Bash(cd:*)"]
+  }
+}
