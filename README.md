@@ -141,6 +141,36 @@ cost to adding features in the development and maintainance of the feature. So i
 help develop and maintain lets discuss. If you want to fire off feature ideas, go for it. Just understand its
 very likely that without someone willing to take up the task, they won't get implemented.
 
+## Supply chain security
+
+Releases of this action include [build provenance attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) signed via [Sigstore](https://www.sigstore.dev/), so you can verify that the code you're running was built from this repository.
+
+### Pin to a commit SHA
+
+Always pin actions to a full commit SHA instead of a mutable tag. Tags can be overwritten (this is how the [March 2025 tj-actions supply chain attack](https://www.stepsecurity.io/blog/harden-runner-detection-tj-actions-changed-files-attack-and-setup-of-coinminer) worked). A SHA is immutable:
+
+```yaml
+# Mutable tag (risky)
+uses: metcalfc/changelog-generator@v4
+
+# Immutable SHA (safe)
+uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # v4.7.0
+```
+
+Use [Dependabot](#keep-up-to-date-with-github-dependabot) to keep SHA-pinned actions up to date automatically.
+
+### Verify build provenance
+
+You can verify that a release was built by this repository's CI:
+
+```bash
+gh attestation verify --repo metcalfc/changelog-generator dist/index.js
+```
+
+### Report vulnerabilities
+
+Please report security issues via [GitHub's private vulnerability reporting](https://github.com/metcalfc/changelog-generator/security/advisories/new), not public issues.
+
 ## Keep up-to-date with GitHub Dependabot
 
 Since [Dependabot](https://docs.github.com/en/github/administering-a-repository/keeping-your-actions-up-to-date-with-github-dependabot)
