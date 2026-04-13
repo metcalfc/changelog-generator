@@ -57,7 +57,7 @@
     "@vercel/ncc": "^0.38.4",
     "eslint": "^10.1.0",
     "gh-refme": "^1.5.0",
-    "globals": "^17.4.0",
+    "globals": "^17.5.0",
     "isexe": "^4.0.0",
     "pre-commit": "git://github.com/metcalfc/pre-commit.git",
     "prettier": "^3.8.1"
