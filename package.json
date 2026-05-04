@@ -55,7 +55,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@vercel/ncc": "^0.38.4",
-    "eslint": "^10.1.0",
+    "eslint": "^10.3.0",
     "gh-refme": "^1.5.0",
     "globals": "^17.4.0",
     "isexe": "^4.0.0",
