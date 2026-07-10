@@ -60,6 +60,6 @@
     "globals": "^17.4.0",
     "isexe": "^4.0.0",
     "pre-commit": "git://github.com/metcalfc/pre-commit.git",
-    "prettier": "^3.8.1"
+    "prettier": "^3.9.5"
   }
 }
