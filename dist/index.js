@@ -45238,7 +45238,19 @@ function getOctokit(token, options, ...additionalPlugins) {
     return new GitHubWithPlugins(getOctokitOptions(token, options));
 }
 //# sourceMappingURL=github.js.map
+;// CONCATENATED MODULE: ./refs.mjs
+// Git ref names are interpolated into a shell command by changelog.sh, so they
+// are validated here before they ever reach the shell. Only characters that are
+// legal in a ref name are allowed: no spaces, quotes, semicolons, backticks or
+// dollar signs.
+const REF_PATTERN = /^[.A-Za-z0-9_/\-+]*$/
+
+function isValidRef(ref) {
+  return typeof ref === 'string' && ref.length > 0 && REF_PATTERN.test(ref)
+}
+
 ;// CONCATENATED MODULE: ./index.js
+
 
 
 
@@ -45254,7 +45266,6 @@ async function run() {
     const fetch = getInput('fetch')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = github_context.repo
-    const regexp = /^[.A-Za-z0-9_/\-+]*$/
 
     if (!headRef) {
       headRef = github_context.sha
@@ -45277,12 +45288,7 @@ async function run() {
     console.log(`head-ref: ${headRef}`)
     console.log(`base-ref: ${baseRef}`)
 
-    if (
-      !!headRef &&
-      !!baseRef &&
-      regexp.test(headRef) &&
-      regexp.test(baseRef)
-    ) {
+    if (isValidRef(headRef) && isValidRef(baseRef)) {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       setFailed(

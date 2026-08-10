@@ -1,6 +1,7 @@
 import { getInput, setFailed, setOutput } from '@actions/core'
 import { exec as _exec } from '@actions/exec'
 import { context, getOctokit } from '@actions/github'
+import { isValidRef } from './refs.mjs'
 
 const src = __dirname
 
@@ -13,7 +14,6 @@ async function run() {
     const fetch = getInput('fetch')
     const octokit = new getOctokit(myToken)
     const { owner, repo } = context.repo
-    const regexp = /^[.A-Za-z0-9_/\-+]*$/
 
     if (!headRef) {
       headRef = context.sha
@@ -36,12 +36,7 @@ async function run() {
     console.log(`head-ref: ${headRef}`)
     console.log(`base-ref: ${baseRef}`)
 
-    if (
-      !!headRef &&
-      !!baseRef &&
-      regexp.test(headRef) &&
-      regexp.test(baseRef)
-    ) {
+    if (isValidRef(headRef) && isValidRef(baseRef)) {
       getChangelog(headRef, baseRef, owner + '/' + repo, reverse, fetch)
     } else {
       setFailed(

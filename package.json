@@ -7,14 +7,14 @@
     "build": "ncc build ./index.js",
     "bump:readme": "sed -i \"s/v[1-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*/v$npm_package_version/g\" ./README.md ./SECURITY.md",
     "bump:workflow": "sed -i \"s/v[1-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*/v$npm_package_version/g\" ./.github/workflows/*yml",
-    "format-check": "prettier --check **/*.{js,yml,json}",
-    "format": "prettier --write **/*.{js,yml,json}",
+    "format-check": "prettier --check \"**/*.{js,mjs,yml,yaml,json}\"",
+    "format": "prettier --write \"**/*.{js,mjs,yml,yaml,json}\"",
     "lint": "eslint ./",
     "postversion": "git push && git push --tags",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit": "npm run build && git add dist/",
     "refme": "npm exec gh-refme -- convert ./.github/workflows/*",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test 'test/**/*.test.mjs'",
     "version": "npm run bump:readme && npm run bump:workflow && git add ./dist ./README.md ./SECURITY.md ./.github/workflows/*yml"
   },
   "pre-commit": [
