@@ -1,12 +1,12 @@
 .PHONY: all help lint format check test build clean install
 
 # Default target
-all: lint check build
+all: lint check test build
 
 # Help command
 help:
 	@echo "Available commands:"
-	@echo "  make              Run lint, check, and build"
+	@echo "  make              Run lint, check, test, and build"
 	@echo "  make help         Show this help message"
 	@echo "  make lint         Run ESLint"
 	@echo "  make format       Format code with Prettier"
@@ -44,7 +44,7 @@ check: check-node
 # Run tests
 test: check-node
 	@echo "🧪 Running tests..."
-	@npm test || echo "⚠️  No tests available. Consider adding tests."
+	@npm test
 
 # Build the project
 build: check-node
