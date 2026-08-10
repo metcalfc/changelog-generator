@@ -45255,8 +45255,6 @@ function isValidRef(ref) {
 
 
 
-const src = (/* unused pure expression or super */ null && (__dirname))
-
 async function run() {
   try {
     let headRef = getInput('head-ref')
@@ -45317,6 +45315,10 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
     }
     options.cwd = './'
 
+    // ncc's asset relocator rewrites this literal into a bundle-relative path
+    // and copies changelog.sh into dist/. Keep `__dirname` inline: hiding it
+    // behind a variable is what the relocator traces, and anything it cannot
+    // trace resolves to null at runtime.
     await exec_exec(
       __nccwpck_require__.ab + "changelog.sh",
       [headRef, baseRef, repoName, reverse, fetch],

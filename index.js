@@ -3,8 +3,6 @@ import { exec as _exec } from '@actions/exec'
 import { context, getOctokit } from '@actions/github'
 import { isValidRef } from './refs.mjs'
 
-const src = __dirname
-
 async function run() {
   try {
     let headRef = getInput('head-ref')
@@ -65,8 +63,12 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
     }
     options.cwd = './'
 
+    // ncc's asset relocator rewrites this literal into a bundle-relative path
+    // and copies changelog.sh into dist/. Keep `__dirname` inline: hiding it
+    // behind a variable is what the relocator traces, and anything it cannot
+    // trace resolves to null at runtime.
     await _exec(
-      `${src}/changelog.sh`,
+      `${__dirname}/changelog.sh`,
       [headRef, baseRef, repoName, reverse, fetch],
       options
     )
