@@ -1,12 +1,16 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 import {
   captureError,
   CHANGELOG_SH,
   commit,
   createRepo,
+  createShallowClone,
+  isShallow,
   git,
   line,
   runChangelog,
@@ -202,4 +206,54 @@ test('exits non-zero when required arguments are missing', t => {
     })
   )
   assert.notEqual(err.status, 0)
+})
+
+test('fetch=true deepens a shallow checkout and picks up its tags', t => {
+  const origin = createRepo(t)
+  const first = commit(origin, 'feat: first')
+  tag(origin, 'v0.0.1')
+  const second = commit(origin, 'feat: second')
+  const third = commit(origin, 'feat: third')
+  tag(origin, 'v0.0.2')
+
+  const dir = createShallowClone(t, origin)
+  assert.ok(isShallow(dir), 'fixture must start shallow, like actions/checkout')
+  assert.ok(
+    !existsSync(join(dir, '.git', 'refs', 'tags', 'v0.0.1')),
+    'fixture must start without the tags the changelog needs'
+  )
+
+  // Chaining --depth=1 fetches ahead of --unshallow used to abort here with
+  // "shallow file has changed since we read it", intermittently.
+  const out = runChangelog(dir, {
+    head: 'v0.0.2',
+    base: 'v0.0.1',
+    fetch: 'true'
+  })
+
+  assert.deepEqual(out.split('\n'), [line(third), line(second)])
+  assert.ok(!isShallow(dir), 'the repository should no longer be shallow')
+  assert.ok(!out.includes(first.sha))
+})
+
+test('fetch=true is a no-op on a checkout that is already complete', t => {
+  const origin = createRepo(t)
+  commit(origin, 'feat: first')
+  tag(origin, 'v0.0.1')
+  const second = commit(origin, 'feat: second')
+  tag(origin, 'v0.0.2')
+
+  const dir = createShallowClone(t, origin)
+  git(dir, ['fetch', '--prune', '--tags', '--unshallow', 'origin'])
+  assert.ok(!isShallow(dir))
+
+  // `git fetch --unshallow` is a fatal error on a complete repository, so the
+  // script must not ask for it unconditionally.
+  const out = runChangelog(dir, {
+    head: 'v0.0.2',
+    base: 'v0.0.1',
+    fetch: 'true'
+  })
+
+  assert.equal(out, line(second))
 })
