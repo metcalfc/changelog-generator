@@ -17,3 +17,11 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    groups:
+      # codeql-action/init, /autobuild and /analyze must all be on the same
+      # version or CodeQL-Build fails with a configuration error. Ungrouped,
+      # Dependabot opens one PR per step and each is red on its own because it
+      # leaves the other two behind.
+      codeql-action:
+        patterns:
+          - 'github/codeql-action*'
