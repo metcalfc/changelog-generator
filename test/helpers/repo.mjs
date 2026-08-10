@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -78,6 +78,24 @@ export function runChangelog(
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe']
   }).trimEnd()
+}
+
+/**
+ * A shallow, single-branch clone of `origin` — what actions/checkout leaves
+ * behind by default, and the state the `fetch` input exists to repair.
+ */
+export function createShallowClone(t, origin) {
+  const dir = mkdtempSync(join(tmpdir(), 'changelog-generator-clone-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+
+  git(dir, ['clone', '--depth=1', '--no-tags', `file://${origin}`, dir])
+  git(dir, ['config', 'user.email', 'test@example.com'])
+  git(dir, ['config', 'user.name', 'Changelog Test'])
+  return dir
+}
+
+export function isShallow(dir) {
+  return existsSync(join(dir, '.git', 'shallow'))
 }
 
 /**

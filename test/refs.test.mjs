@@ -3,7 +3,12 @@ import assert from 'node:assert/strict'
 
 import { isValidRef } from '../refs.mjs'
 
-test('isValidRef accepts ref names git actually produces', () => {
+// REF_PATTERN is a shell-safety whitelist, not a git ref validator: it also
+// admits strings git itself rejects (`foo..bar`, `foo.lock`, a leading dot).
+// That is fine for its purpose — changelog.sh passes refs to `git log`, which
+// rejects malformed ones on its own — but the tests below only claim the
+// shell-safety property.
+test('isValidRef accepts the ref names real workflows pass in', () => {
   const valid = [
     'main',
     'v4.7.0',
@@ -14,8 +19,7 @@ test('isValidRef accepts ref names git actually produces', () => {
     'dependabot/npm_and_yarn/eslint-10.8.0',
     'release-4.x',
     'weird+but+legal',
-    '0ea1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3',
-    '.hidden'
+    '0ea1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3'
   ]
 
   for (const ref of valid) {

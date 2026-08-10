@@ -12,13 +12,22 @@ fi
 
 fetch=$5
 
-# By default a GitHub action checkout is shallow. Get all the tags, branches,
-# and history. Redirect output to standard error which we can collect in the
-# action.
+# By default a GitHub action checkout is shallow and single-branch. Get all the
+# tags, branches, and history. Redirect output to standard error which we can
+# collect in the action.
+#
+# This has to be a single fetch. Chaining --depth=1 fetches ahead of
+# --unshallow races on .git/shallow: each one rewrites the file that the next
+# one has already read, and git intermittently aborts with "shallow file has
+# changed since we read it". --unshallow is also an error on a repository that
+# is already complete, so only ask for it when there is a shallow file.
 if [ "$fetch" == "true" ]; then
-  git fetch --depth=1 origin +refs/tags/*:refs/tags/* 1>&2
-  git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/* 1>&2
-  git fetch --prune --unshallow 1>&2
+  unshallow=""
+  if [ -f "$(git rev-parse --git-path shallow)" ]; then
+    unshallow="--unshallow"
+  fi
+  # Do not quote $unshallow, for the same reason as $extra_flags below.
+  git fetch --prune --tags ${unshallow} origin '+refs/heads/*:refs/remotes/origin/*' 1>&2
 fi
 
 # if folks don't have a base ref to compare against just use the initial

@@ -18,6 +18,21 @@ test('dist/changelog.sh matches the source script', () => {
   assert.equal(shipped, source, 'run `make build` to refresh dist/')
 })
 
+test('the bundle resolves changelog.sh through ncc asset relocation', () => {
+  const bundle = readFileSync(join(ROOT, 'dist', 'index.js'), 'utf8')
+
+  // index.js builds the script path from `__dirname`. That only resolves in
+  // the bundle because ncc's asset relocator rewrites the literal and copies
+  // changelog.sh into dist/. If a refactor or an ncc upgrade ever leaves the
+  // path un-relocated, the action fails on every run at the exec call, and
+  // nothing else in this suite runs the bundle to catch it.
+  assert.match(
+    bundle,
+    /__nccwpck_require__\.ab \+ "changelog\.sh"/,
+    'ncc no longer relocates the changelog.sh path'
+  )
+})
+
 test('dist/changelog.sh is executable', () => {
   const mode = statSync(join(ROOT, 'dist', 'changelog.sh')).mode
   assert.equal(mode & 0o111, 0o111, 'dist/changelog.sh must be executable')

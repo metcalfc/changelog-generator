@@ -33,16 +33,14 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # was: actions/checkout@v6
       - name: Generate changelog
         id: changelog
-        # refme: ignore
-        uses: metcalfc/changelog-generator@main
+        uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'v0.0.2'
           base-ref: 'v0.0.1'
       - name: Reverse the generated changelog
         id: changelog-rev
-        # refme: ignore
-        uses: metcalfc/changelog-generator@main
+        uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'v0.0.2'
@@ -50,8 +48,7 @@ jobs:
           reverse: 'true'
       - name: Explicitly do not reverse the generated changelog
         id: changelog-notrev
-        # refme: ignore
-        uses: metcalfc/changelog-generator@main
+        uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'v0.0.2'
@@ -81,8 +78,7 @@ jobs:
           EOF
       - name: Generate changelog from release
         id: release
-        # refme: ignore
-        uses: metcalfc/changelog-generator@main
+        uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the changelog
