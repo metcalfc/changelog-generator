@@ -64,9 +64,9 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
     options.cwd = './'
 
     // ncc's asset relocator rewrites this literal into a bundle-relative path
-    // and copies changelog.sh into dist/. Keep `__dirname` inline: hiding it
-    // behind a variable is what the relocator traces, and anything it cannot
-    // trace resolves to null at runtime.
+    // and copies changelog.sh into dist/, so `__dirname` resolves inside the
+    // bundle even though the script lives next to it rather than next to this
+    // file. test/action.test.mjs runs the built bundle to prove it.
     await _exec(
       `${__dirname}/changelog.sh`,
       [headRef, baseRef, repoName, reverse, fetch],
@@ -81,13 +81,14 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
       setOutput('changelog', output)
     } else {
       setFailed(err)
-      process.exit(1)
     }
   } catch (err) {
+    // setFailed sets a failing exit code on its own. Calling process.exit()
+    // here used to override it with 0, so a changelog that failed to generate
+    // still reported success and downstream steps saw an empty output.
     setFailed(
       `Could not generate changelog between references because: ${err.message}`
     )
-    process.exit(0)
   }
 }
 

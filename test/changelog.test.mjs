@@ -44,22 +44,24 @@ test('reverse=true lists the commits oldest first', t => {
   assert.deepEqual(out.split('\n'), [line(second), line(third)])
 })
 
-test('reverse=false is the same as omitting reverse', t => {
+test('reverse=false keeps the default newest-first order', t => {
   const dir = createRepo(t)
   commit(dir, 'feat: first')
   tag(dir, 'v0.0.1')
-  commit(dir, 'feat: second')
-  commit(dir, 'feat: third')
+  const second = commit(dir, 'feat: second')
+  const third = commit(dir, 'feat: third')
   tag(dir, 'v0.0.2')
 
-  const withFlag = runChangelog(dir, {
+  // Assert the order outright. Comparing this against a run that omits
+  // `reverse` proves nothing, because omitting it just takes the same
+  // 'false' the helper passes by default.
+  const out = runChangelog(dir, {
     head: 'v0.0.2',
     base: 'v0.0.1',
     reverse: 'false'
   })
-  const withoutFlag = runChangelog(dir, { head: 'v0.0.2', base: 'v0.0.1' })
 
-  assert.equal(withFlag, withoutFlag)
+  assert.deepEqual(out.split('\n'), [line(third), line(second)])
 })
 
 test('formats every commit as a markdown link to the commit URL', t => {

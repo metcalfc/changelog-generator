@@ -14,8 +14,7 @@ jobs:
 
       - name: Generate changelog
         id: changelog
-        # refme: ignore
-        uses: metcalfc/changelog-generator@main
+        uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: 'origin/test/branch' #add 'origin/` in front of your branch name
