@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # was: actions/checkout@v6
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # was: metcalfc/changelog-generator@v4.8.0
+        uses: metcalfc/changelog-generator@98b12822c5dc6bad335d1d60d920cb69831b9c5d # was: metcalfc/changelog-generator@v4.8.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Attest build provenance
