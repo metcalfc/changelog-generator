@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 
 import {
   captureError,
@@ -309,4 +309,61 @@ test('fetch=true is a no-op on a checkout that is already complete', t => {
   })
 
   assert.equal(out, line(second))
+})
+
+// Rendering subjects as literal Markdown made the script depend on a node
+// interpreter. index.js passes the one already running the bundle, because a
+// container job gets the runner's node mounted at /__e/node<version>/bin/node
+// and never on the container's PATH -- `node` is absent in plenty of the base
+// images people build jobs on, and the failure there is a bare exit 127.
+test('the renderer runs under the interpreter ACTION_NODE names', t => {
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const head = commit(dir, 'feat: rendered by the action interpreter')
+
+  assert.equal(
+    runChangelog(dir, {
+      head: 'HEAD',
+      base: 'base',
+      env: { ACTION_NODE: process.execPath }
+    }),
+    line(head)
+  )
+
+  // If the script ignored ACTION_NODE and reached for PATH instead, an
+  // unusable interpreter would go unnoticed and this would still pass.
+  const error = captureError(() =>
+    runChangelog(dir, {
+      head: 'HEAD',
+      base: 'base',
+      env: { ACTION_NODE: join(dir, 'not-an-interpreter') }
+    })
+  )
+  assert.notEqual(error.status, 0)
+})
+
+test('the renderer needs no node on PATH when ACTION_NODE is set', t => {
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const head = commit(dir, 'feat: no interpreter on PATH')
+
+  // Keep git reachable, drop everything else. Hosted images often carry a
+  // system node in /usr/bin, so this cannot prove absence on its own -- the
+  // bogus-interpreter case above is what proves ACTION_NODE is consulted.
+  const gitDir = dirname(
+    execFileSync('/bin/bash', ['-c', 'command -v git'], {
+      encoding: 'utf8'
+    }).trim()
+  )
+
+  assert.equal(
+    runChangelog(dir, {
+      head: 'HEAD',
+      base: 'base',
+      env: { PATH: gitDir, ACTION_NODE: process.execPath }
+    }),
+    line(head)
+  )
 })

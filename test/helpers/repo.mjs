@@ -70,13 +70,15 @@ export function runChangelog(
     base = '',
     repo = 'metcalfc/changelog-generator',
     reverse = 'false',
-    fetch = 'false'
+    fetch = 'false',
+    env = {}
   }
 ) {
   return execFileSync(CHANGELOG_SH, [head, base, repo, reverse, fetch], {
     cwd: dir,
     encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe']
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, ...env }
   }).trimEnd()
 }
 

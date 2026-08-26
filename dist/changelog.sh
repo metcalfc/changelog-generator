@@ -44,7 +44,7 @@ fi
 log=$(git log "${base_ref}"..."${head_ref}" \
   --pretty=format:"%H%x00%h%x00%s" -z \
   ${extra_flags} |
-  REPO_URL="$repo_url" node -e '
+  REPO_URL="$repo_url" "${ACTION_NODE:-node}" -e '
     const { readFileSync } = require("node:fs")
 
     const repoUrl = process.env.REPO_URL
