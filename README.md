@@ -129,10 +129,12 @@ In order to keep this action as simple as possible we aren't planning to add mor
           ${{ steps.changelog.outputs.changelog }}
           EOF
           )
-          log="${log//'%'/'%25'}"
-          log="${log//$'\n'/'%0A'}"
-          log="${log//$'\r'/'%0D'}"
-          echo "log=$log" >> $GITHUB_OUTPUT
+          delimiter=$(openssl rand -hex 16)
+          {
+            echo "log<<$delimiter"
+            echo "$log"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Print the modified changelog
         run: |
@@ -141,7 +143,9 @@ In order to keep this action as simple as possible we aren't planning to add mor
           EOF
 ```
 
-You might be wondering about that set of escaping for the `log`. Thats because GitHub Actions doesn't support multiline output. Read more [here](https://github.community/t/set-output-truncates-multiline-strings/16852).
+That heredoc is how you return a multiline value. A plain `echo "log=$log" >> $GITHUB_OUTPUT` keeps only the first line.
+
+This example used to percent-encode the newlines as `%0A` instead, which the long-gone `::set-output` command decoded. `$GITHUB_OUTPUT` does not, so that version produced a single line with literal `%0A` in it. Use a random delimiter rather than a fixed one: the value is built from commit subjects, and a fixed marker is something a commit subject could contain in order to write additional keys into `$GITHUB_OUTPUT`.
 
 ## Example use case
 
