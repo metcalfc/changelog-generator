@@ -5,8 +5,40 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v4.8.0
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  verify-dist:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # was: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # was: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Rebuild and verify distribution
+        run: |
+          set -euo pipefail
+          verify_dir=$(mktemp -d)
+          trap 'rm -rf "$verify_dir"' EXIT
+
+          npx --no-install ncc build ./index.js -o "$verify_dir"
+          cmp "$verify_dir/index.js" dist/index.js
+          cmp "$verify_dir/changelog.sh" dist/changelog.sh
+          test -x dist/changelog.sh
+
   release:
+    needs: verify-dist
     permissions:
       contents: write
       id-token: write
@@ -16,11 +48,28 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # was: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
       - name: Generate changelog
         id: changelog
         uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify attestation subject is unchanged
+        run: git diff --exit-code "$GITHUB_SHA" -- dist/index.js dist/changelog.sh
+      - name: Verify release tag still targets this commit
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          remote_sha=$(git ls-remote origin \
+            "refs/tags/$TAG_NAME" "refs/tags/$TAG_NAME^{}" | \
+            LC_ALL=C awk '
+              $2 ~ /\^\{\}$/ { peeled = $1 }
+              $2 !~ /\^\{\}$/ { direct = $1 }
+              END { print peeled ? peeled : direct }
+            ')
+          test "$remote_sha" = "$GITHUB_SHA"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # was: actions/attest-build-provenance@v4
         with:
@@ -29,10 +78,25 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # was: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref }}
+          tag: ${{ github.ref_name }}
+          commit: ${{ github.sha }}
+          immutableCreate: true
           name: Release ${{ github.ref_name }}
           body: ${{ steps.changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify published tag still targets this commit
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          remote_sha=$(git ls-remote origin \
+            "refs/tags/$TAG_NAME" "refs/tags/$TAG_NAME^{}" | \
+            LC_ALL=C awk '
+              $2 ~ /\^\{\}$/ { peeled = $1 }
+              $2 !~ /\^\{\}$/ { direct = $1 }
+              END { print peeled ? peeled : direct }
+            ')
+          test "$remote_sha" = "$GITHUB_SHA"
       - name: Update Major Version Tag
         # The push deliberately uses the credential actions/checkout persisted,
         # which is the default GITHUB_TOKEN. Pushes made with it do not trigger
