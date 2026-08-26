@@ -4,8 +4,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| v5.0.0   | :white_check_mark: |
-| < v5.0.0 | :x:                |
+| v5.0.1   | :white_check_mark: |
+| < v5.0.1 | :x:                |
 
 ## Untrusted input
 

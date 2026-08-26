@@ -4,7 +4,7 @@ This Action returns a markdown formatted changelog between two git references. T
 
 I just wanted a simple way to populate the body of a GitHub Release.
 
-<a href="https://github.com/metcalfc/changelog-generator/releases/tag/v5.0.0"><img alt="Example Release Notes" src="./release-notes.png" width="400"></a>
+<a href="https://github.com/metcalfc/changelog-generator/releases/tag/v5.0.1"><img alt="Example Release Notes" src="./release-notes.png" width="400"></a>
 
 ## Inputs
 
@@ -63,7 +63,7 @@ First you will need to generate the changelog itself. To get the changelog betwe
 ```yaml
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v5.0.0
+  uses: metcalfc/changelog-generator@v5.0.1
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -73,7 +73,7 @@ Or, if you have two specific references you want:
 ```yaml
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v5.0.0
+  uses: metcalfc/changelog-generator@v5.0.1
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'v0.0.2'
@@ -91,11 +91,11 @@ If you want to point to a branch containing forward slashes (https://github.com/
 
 - name: Generate changelog
   id: changelog
-  uses: metcalfc/changelog-generator@v5.0.0
+  uses: metcalfc/changelog-generator@v5.0.1
   with:
     myToken: ${{ secrets.GITHUB_TOKEN }}
     head-ref: 'origin/my/branch/with/slashes' #add 'origin/` in front of your branch name
-    base-ref: 'v5.0.0'
+    base-ref: 'v5.0.1'
     fetch: false
 ```
 
@@ -175,7 +175,7 @@ Always pin actions to a full commit SHA instead of a mutable tag. Tags can be ov
 uses: metcalfc/changelog-generator@v4
 
 # Immutable SHA (safe)
-uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # v5.0.0
+uses: metcalfc/changelog-generator@3f82cef08fe5dcf57c591fe165e70e1d5032e15a # v5.0.1
 ```
 
 Use [Dependabot](#keep-up-to-date-with-github-dependabot) to keep SHA-pinned actions up to date automatically.
