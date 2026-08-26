@@ -91,7 +91,13 @@ test('the release tag crosses into the shell only through the environment', () =
   )
   assert.notEqual(stepStart, -1, 'major-tag update step must exist')
 
-  const step = releaseWorkflow.slice(stepStart)
+  // Bound the slice at the next step. Reading to end-of-file only works while
+  // this is the last step in the file, and silently widens if one is appended.
+  const nextStep = releaseWorkflow.indexOf('\n      - name:', stepStart + 1)
+  const step = releaseWorkflow.slice(
+    stepStart,
+    nextStep === -1 ? undefined : nextStep
+  )
   const envStart = step.indexOf('\n        env:')
   assert.notEqual(envStart, -1, 'major-tag update step must declare env')
 

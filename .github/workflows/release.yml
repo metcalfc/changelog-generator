@@ -34,10 +34,13 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update Major Version Tag
+        # The push deliberately uses the credential actions/checkout persisted,
+        # which is the default GITHUB_TOKEN. Pushes made with it do not trigger
+        # workflows. A PAT here would re-trigger this workflow on the v4 tag,
+        # which matches the v* filter, and each run would push v4 again.
         run: |
           MAJOR_VERSION=$(printf '%s\n' "$TAG_NAME" | grep -oE 'v[0-9]+')
           git tag -f "$MAJOR_VERSION"
           git push origin "$MAJOR_VERSION" --force
         env:
           TAG_NAME: ${{ github.ref_name }}
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
