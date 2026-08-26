@@ -16,22 +16,18 @@ test('release attestation is gated on exact-revision dist verification', () => {
   assert.ok(verifyStart >= 0 && releaseStart > verifyStart)
 
   const verifyJob = workflow.slice(verifyStart, releaseStart)
-  assert.match(
-    workflow,
-    /concurrency:\n\s+group: release-\$\{\{ github\.ref \}\}/
-  )
-  assert.match(workflow, /cancel-in-progress: true/)
+  // Queued, not preempted: a cancel can land between publishing the release
+  // and moving the major tag.
+  assert.match(workflow, /group: release-\$\{\{ github\.ref \}\}/)
+  assert.match(workflow, /cancel-in-progress: false/)
+  assert.doesNotMatch(workflow, /cancel-in-progress: true/)
   assert.match(verifyJob, /permissions:\n\s+contents: read/)
   assert.match(verifyJob, /ref: \$\{\{\s*github\.sha\s*\}\}/)
   assert.match(verifyJob, /node-version: '24'/)
   assert.match(verifyJob, /run: npm ci/)
-  assert.match(verifyJob, /npx --no-install ncc build \.\/index\.js/)
-  assert.match(verifyJob, /cmp "\$verify_dir\/index\.js" dist\/index\.js/)
-  assert.match(
-    verifyJob,
-    /cmp "\$verify_dir\/changelog\.sh" dist\/changelog\.sh/
-  )
-  assert.match(verifyJob, /test -x dist\/changelog\.sh/)
+  // The bundle checks themselves live in test/dist.test.mjs so there is one
+  // copy of them; the gate's job is to make the release depend on that suite.
+  assert.match(verifyJob, /run: npm test/)
 
   const releaseJob = workflow.slice(releaseStart)
   assert.match(releaseJob, /release:\n\s+needs: verify-dist/)

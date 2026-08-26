@@ -6,8 +6,13 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v4.8.0
 
 concurrency:
+  # Queue same-tag runs, never preempt them. A cancel can land between Create
+  # Release and Update Major Version Tag, leaving a published release with the
+  # major tag still pointing at the previous one. Nothing is gained by
+  # cancelling either: a run whose tag moved underneath it already fails at the
+  # ls-remote checks below.
   group: release-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   verify-dist:
@@ -26,16 +31,13 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-      - name: Rebuild and verify distribution
-        run: |
-          set -euo pipefail
-          verify_dir=$(mktemp -d)
-          trap 'rm -rf "$verify_dir"' EXIT
-
-          npx --no-install ncc build ./index.js -o "$verify_dir"
-          cmp "$verify_dir/index.js" dist/index.js
-          cmp "$verify_dir/changelog.sh" dist/changelog.sh
-          test -x dist/changelog.sh
+      # test/dist.test.mjs rebuilds the bundle with ncc and compares it to the
+      # checked-in dist/, checks that changelog.sh matches its source, and
+      # asserts the exec bit -- everything the attestation depends on. Run the
+      # whole suite rather than restating those checks here: it is one copy of
+      # the logic, and it also means no release ships on a red suite.
+      - name: Verify the bundle and the release workflow
+        run: npm test
 
   release:
     needs: verify-dist
@@ -79,6 +81,9 @@ jobs:
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # was: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref_name }}
+          # Only consulted if the tag has to be created, which a push-triggered
+          # run never needs. The binding to this commit is enforced by the
+          # ls-remote checks above and below, not by this input.
           commit: ${{ github.sha }}
           immutableCreate: true
           name: Release ${{ github.ref_name }}
