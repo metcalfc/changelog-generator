@@ -6,7 +6,7 @@
   "scripts": {
     "build": "ncc build ./index.js",
     "bump:readme": "perl -pi -e \"s/v[1-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*/v$npm_package_version/g\" ./README.md ./SECURITY.md",
-    "bump:workflow": "perl -pi -e \"s/v[1-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*/v$npm_package_version/g\" ./.github/workflows/*yml",
+    "bump:workflow": "perl -pi -e \"s{(metcalfc/changelog-generator\\@)v[1-9][0-9]*\\.[0-9]+\\.[0-9]+}{\\${1}v$npm_package_version}g\" ./.github/workflows/*yml",
     "format-check": "prettier --check \"**/*.{js,mjs,yml,yaml,json}\"",
     "format": "prettier --write \"**/*.{js,mjs,yml,yaml,json}\"",
     "lint": "eslint ./",

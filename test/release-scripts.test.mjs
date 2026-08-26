@@ -1,7 +1,14 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import {
+  cpSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -61,16 +68,35 @@ test('bump:readme rewrites the version in the docs', t => {
   assert.ok(!/v4\.\d+\.\d+/.test(out['SECURITY.md']))
 })
 
-test('bump:workflow rewrites the version in the workflows', t => {
-  const out = runBumpScript(t, 'bump:workflow', '9.9.9', [
-    '.github/workflows/release.yml'
-  ])
+test('bump:workflow rewrites the self-reference and nothing else', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'changelog-generator-bump-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  mkdirSync(join(dir, '.github', 'workflows'), { recursive: true })
 
-  assert.match(out['.github/workflows/release.yml'], /v9\.9\.9/)
-  assert.ok(
-    !/v4\.\d+\.\d+/.test(out['.github/workflows/release.yml']),
-    'no old version may survive in release.yml'
+  const sample = join(dir, '.github', 'workflows', 'sample.yml')
+  writeFileSync(
+    sample,
+    [
+      '        uses: metcalfc/changelog-generator@v4.8.0',
+      '        uses: actions/setup-node@8207627 # was: actions/setup-node@v7.0.0',
+      "      - 'v*' # Push events to matching v*, i.e. v1.0, v4.8.0"
+    ].join('\n')
   )
+
+  execFileSync('sh', ['-c', scripts['bump:workflow']], {
+    cwd: dir,
+    env: { ...process.env, npm_package_version: '9.9.9' },
+    stdio: ['ignore', 'pipe', 'pipe']
+  })
+  const after = readFileSync(sample, 'utf8')
+
+  assert.match(after, /metcalfc\/changelog-generator@v9\.9\.9/)
+
+  // A pinned third-party action carries a comment recording which upstream
+  // release its SHA came from, and gh-refme maintains it. An unanchored bump
+  // rewrote those too, so the pin ended up claiming a release of that action
+  // which never existed -- the one thing a supply-chain reviewer reads it for.
+  assert.match(after, /# was: actions\/setup-node@v7\.0\.0/)
 })
 
 test('the bump scripts avoid GNU-only sed -i', () => {
