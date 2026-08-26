@@ -67,10 +67,15 @@ jobs:
           ${{ steps.changelog.outputs.changelog }}
           EOF
           )
-          log="${log//'%'/'%25'}"
-          log="${log//$'\n'/'%0A'}"
-          log="${log//$'\r'/'%0D'}"
-          echo "modified=$log" >> $GITHUB_OUTPUT
+          # A random delimiter, per GitHub's own guidance: the value is built
+          # from commit subjects, so a fixed marker is something a commit could
+          # contain in order to write extra keys into GITHUB_OUTPUT.
+          delimiter=$(openssl rand -hex 16)
+          {
+            echo "modified<<$delimiter"
+            echo "$log"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
       - name: Print the modified changelog
         run: |
           cat << "EOF"
