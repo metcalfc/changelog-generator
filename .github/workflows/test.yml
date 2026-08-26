@@ -61,12 +61,16 @@ jobs:
           EOF
       - name: Modify the changelog
         id: modified
+        # The changelog arrives by environment rather than being pasted into
+        # the script. Interpolating it into a heredoc prepends this block's
+        # YAML indentation to the value's first line -- ten spaces, which
+        # Markdown renders as a code block -- and appends a blank line from the
+        # value's trailing newline, which tac then moves to the front.
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
         run: |
-          set -o noglob
-          log=$(cat << "EOF" | grep -v Bumping | tac
-          ${{ steps.changelog.outputs.changelog }}
-          EOF
-          )
+          set -euo pipefail
+          log=$(printf '%s\n' "$CHANGELOG" | grep -v Bumping | grep -v '^[[:space:]]*$' | tac)
           # A random delimiter, per GitHub's own guidance: the value is built
           # from commit subjects, so a fixed marker is something a commit could
           # contain in order to write extra keys into GITHUB_OUTPUT.
