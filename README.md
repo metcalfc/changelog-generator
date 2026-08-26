@@ -107,12 +107,11 @@ In order to keep this action as simple as possible we aren't planning to add mor
 ```yaml
       - name: Modify the changelog
         id: modified
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
         run: |
-          set -o noglob
-          log=$(cat << "EOF" | grep -v Bumping | tac
-          ${{ steps.changelog.outputs.changelog }}
-          EOF
-          )
+          set -euo pipefail
+          log=$(printf '%s\n' "$CHANGELOG" | grep -v Bumping | grep -v '^[[:space:]]*$' | tac)
           delimiter=$(openssl rand -hex 16)
           {
             echo "log<<$delimiter"
@@ -128,6 +127,8 @@ In order to keep this action as simple as possible we aren't planning to add mor
 ```
 
 That heredoc is how you return a multiline value. A plain `echo "log=$log" >> $GITHUB_OUTPUT` keeps only the first line.
+
+The changelog is read from the environment rather than interpolated into the script. `${{ }}` inside a `run:` block is textual substitution, so a value pasted into a heredoc picks up that block's YAML indentation on its first line -- which Markdown then renders as a code block -- and a commit subject is untrusted input besides.
 
 This example used to percent-encode the newlines as `%0A` instead, which the long-gone `::set-output` command decoded. `$GITHUB_OUTPUT` does not, so that version produced a single line with literal `%0A` in it. Use a random delimiter rather than a fixed one: the value is built from commit subjects, and a fixed marker is something a commit subject could contain in order to write additional keys into `$GITHUB_OUTPUT`.
 
