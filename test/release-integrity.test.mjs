@@ -47,3 +47,27 @@ test('release attestation is gated on exact-revision dist verification', () => {
   assert.match(releaseJob, /commit: \$\{\{\s*github\.sha\s*\}\}/)
   assert.match(releaseJob, /immutableCreate: true/)
 })
+
+test('the changelog is based on the previous release of the same line', () => {
+  const releaseJob = workflow.slice(workflow.indexOf('  release:'))
+
+  // The API's latest release is the highest across every line, so a v4 patch
+  // diffed against v5 and listed commits from both. git describe answers with
+  // the previous release reachable from this commit, which is right on either.
+  assert.match(releaseJob, /fetch-depth: 0/)
+  assert.match(releaseJob, /git describe --tags --abbrev=0/)
+  assert.match(
+    releaseJob,
+    /base-ref: \$\{\{ steps\.previous\.outputs\.tag \}\}/
+  )
+
+  // Without --match, the moving major tags (v4, v5) sit on the same commits as
+  // the release tags and describe may answer with one of those instead.
+  assert.match(releaseJob, /--match 'v\[0-9\]\*\.\[0-9\]\*\.\[0-9\]\*'/)
+
+  // The lookup must precede the step that consumes it.
+  assert.ok(
+    releaseJob.indexOf('id: previous') <
+      releaseJob.indexOf('base-ref: ${{ steps.previous.outputs.tag }}')
+  )
+})

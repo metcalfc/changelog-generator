@@ -52,11 +52,32 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # was: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
+          # git describe below needs the history and the tags, neither of which
+          # the default shallow, tagless checkout provides.
+          fetch-depth: 0
+      - name: Find the previous release on this line
+        id: previous
+        run: |
+          set -euo pipefail
+          # Left to itself the action asks the API for the latest release, and
+          # that is the highest release across every line -- so a v4 patch
+          # diffed against v5 and produced a symmetric difference listing
+          # commits from both lines. Ask git for the previous release tag
+          # reachable from this commit instead, which is right on either line.
+          # --match skips the moving major tags (v4, v5), which point at the
+          # same commits as the release tags and would otherwise be ambiguous.
+          tag=$(git describe --tags --abbrev=0 \
+            --match 'v[0-9]*.[0-9]*.[0-9]*' "$GITHUB_SHA^" 2>/dev/null || true)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "previous release: ${tag:-<none: falling back to the latest release>}"
       - name: Generate changelog
         id: changelog
         uses: ./
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+          # Empty falls back to the API's latest release, which is the old
+          # behaviour and the right answer for a repository with one line.
+          base-ref: ${{ steps.previous.outputs.tag }}
       - name: Verify attestation subject is unchanged
         run: git diff --exit-code "$GITHUB_SHA" -- dist/index.js dist/changelog.sh
       - name: Verify release tag still targets this commit

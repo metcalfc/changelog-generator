@@ -61,12 +61,16 @@ jobs:
           EOF
       - name: Modify the changelog
         id: modified
+        # The changelog arrives by environment rather than being pasted into
+        # the script. Interpolating it into a heredoc prepends this block's
+        # YAML indentation to the value's first line -- ten spaces, which
+        # Markdown renders as a code block -- and appends a blank line from the
+        # value's trailing newline, which tac then moves to the front.
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
         run: |
-          set -o noglob
-          log=$(cat << "EOF" | grep -v Bumping | tac
-          ${{ steps.changelog.outputs.changelog }}
-          EOF
-          )
+          set -euo pipefail
+          log=$(printf '%s\n' "$CHANGELOG" | grep -v Bumping | grep -v '^[[:space:]]*$' | tac)
           # A random delimiter, per GitHub's own guidance: the value is built
           # from commit subjects, so a fixed marker is something a commit could
           # contain in order to write extra keys into GITHUB_OUTPUT.
@@ -91,3 +95,67 @@ jobs:
           cat << "EOF"
           ${{ steps.release.outputs.changelog }}
           EOF
+      - name: Assert the generated changelogs
+        # Every step above only printed its output, so this job passed while
+        # emitting a single line of literal %0A for as long as that bug lived.
+        # The outputs arrive through the environment rather than being pasted
+        # into the script: a commit subject is untrusted, and this is the same
+        # boundary the release workflow keeps for tag names.
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+          REVERSED: ${{ steps.changelog-rev.outputs.changelog }}
+          NOT_REVERSED: ${{ steps.changelog-notrev.outputs.changelog }}
+          MODIFIED: ${{ steps.modified.outputs.modified }}
+          FROM_RELEASE: ${{ steps.release.outputs.changelog }}
+        run: |
+          set -euo pipefail
+
+          check() {
+            if [ "$2" = "$3" ]; then
+              echo "ok: $1"
+            else
+              echo "::error::$1"
+              printf 'got:\n%s\n\nwant:\n%s\n' "$2" "$3"
+              exit 1
+            fi
+          }
+
+          # v0.0.1..v0.0.2 is a frozen three-commit range, so the entire
+          # output is deterministic and can be compared exactly rather than
+          # pattern-matched.
+          # The backticks are literal Markdown from the code span, not command
+          # substitution, so single quotes are exactly right here.
+          # shellcheck disable=SC2016
+          one='- [554162a](http://github.com/metcalfc/changelog-generator/commit/554162af5681a3e485056d52716e0a8a6e868510) - ` Bumping to 0.0.2 `'
+          # shellcheck disable=SC2016
+          two='- [8ea6bc3](http://github.com/metcalfc/changelog-generator/commit/8ea6bc3e7e1e973498683897fe624797f1f54f54) - ` Javascript not my strong suit. `'
+          # shellcheck disable=SC2016
+          three='- [c74bcf9](http://github.com/metcalfc/changelog-generator/commit/c74bcf9663574361b90225d226b952a769266daf) - ` Fix README example spacing. `'
+
+          # $() strips trailing newlines from both sides, so the comparison
+          # does not hinge on whether the output ends with one.
+          check 'default order' \
+            "$(printf '%s' "$CHANGELOG")" "$(printf '%s\n%s\n%s' "$one" "$two" "$three")"
+          check 'reverse: false matches the default' \
+            "$(printf '%s' "$NOT_REVERSED")" "$(printf '%s' "$CHANGELOG")"
+          check 'reverse: true reverses' \
+            "$(printf '%s' "$REVERSED")" "$(printf '%s\n%s\n%s' "$three" "$two" "$one")"
+
+          # grep -v Bumping drops the first entry and tac flips the rest. This
+          # is the step that silently emitted %0A instead of newlines.
+          check 'the modified changelog is real multiline text' \
+            "$(printf '%s' "$MODIFIED")" "$(printf '%s\n%s' "$three" "$two")"
+
+          case "$MODIFIED" in
+            *%0A* | *%25* | *%0D*)
+              echo "::error::percent-encoded newlines are back in the output"
+              exit 1
+              ;;
+          esac
+
+          # This one has no fixed range -- it runs against the latest release --
+          # so assert the shape instead of the content.
+          [ -n "$FROM_RELEASE" ] || { echo "::error::empty release changelog"; exit 1; }
+          bad=$(printf '%s' "$FROM_RELEASE" | grep -cvE '^- \[[0-9a-f]+\]\(http://github\.com/[^)]+\) - .+$' || true)
+          [ "$bad" = "0" ] || { echo "::error::$bad malformed line(s)"; printf '%s\n' "$FROM_RELEASE"; exit 1; }
+          echo "ok: release-based changelog is well formed"
