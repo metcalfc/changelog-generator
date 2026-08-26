@@ -123,14 +123,12 @@ jobs:
           # v0.0.1..v0.0.2 is a frozen three-commit range, so the entire
           # output is deterministic and can be compared exactly rather than
           # pattern-matched.
-          # The backticks are literal Markdown from the code span, not command
-          # substitution, so single quotes are exactly right here.
-          # shellcheck disable=SC2016
-          one='- [554162a](http://github.com/metcalfc/changelog-generator/commit/554162af5681a3e485056d52716e0a8a6e868510) - ` Bumping to 0.0.2 `'
-          # shellcheck disable=SC2016
-          two='- [8ea6bc3](http://github.com/metcalfc/changelog-generator/commit/8ea6bc3e7e1e973498683897fe624797f1f54f54) - ` Javascript not my strong suit. `'
-          # shellcheck disable=SC2016
-          three='- [c74bcf9](http://github.com/metcalfc/changelog-generator/commit/c74bcf9663574361b90225d226b952a769266daf) - ` Fix README example spacing. `'
+          # This is the v4 line, which renders subjects as plain text. The v5
+          # fixtures wrap each subject in a code span; if you port this file
+          # between lines, these three strings are what has to change.
+          one='- [554162a](http://github.com/metcalfc/changelog-generator/commit/554162af5681a3e485056d52716e0a8a6e868510) - Bumping to 0.0.2'
+          two='- [8ea6bc3](http://github.com/metcalfc/changelog-generator/commit/8ea6bc3e7e1e973498683897fe624797f1f54f54) - Javascript not my strong suit.'
+          three='- [c74bcf9](http://github.com/metcalfc/changelog-generator/commit/c74bcf9663574361b90225d226b952a769266daf) - Fix README example spacing.'
 
           # $() strips trailing newlines from both sides, so the comparison
           # does not hinge on whether the output ends with one.
