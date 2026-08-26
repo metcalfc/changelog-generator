@@ -13,6 +13,7 @@ import {
   isShallow,
   git,
   line,
+  literalMarkdownSubject,
   runChangelog,
   tag
 } from './helpers/repo.mjs'
@@ -80,10 +81,7 @@ test('formats every commit as a markdown link to the commit URL', t => {
     repo: 'octocat/hello-world'
   })
 
-  assert.equal(
-    out,
-    `- [${head.short}](http://github.com/octocat/hello-world/commit/${head.sha}) - fix: something broke`
-  )
+  assert.equal(out, line(head, 'octocat/hello-world'))
 })
 
 test('an empty base ref falls back to the initial commit', t => {
@@ -129,7 +127,7 @@ test('handles branch names containing slashes', t => {
   assert.equal(out, line(onBranch))
 })
 
-test('passes commit subjects through without shell interpretation', t => {
+test('renders commit subjects as literal Markdown without shell interpretation', t => {
   const dir = createRepo(t)
   commit(dir, 'chore: base')
   tag(dir, 'base')
@@ -148,6 +146,61 @@ test('passes commit subjects through without shell interpretation', t => {
     out.split('\n'),
     commits.reverse().map(c => line(c))
   )
+})
+
+test('renders active Markdown as literal text with an inert code span', t => {
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const head = commit(
+    dir,
+    'docs: [link](https://evil.invalid) ![pixel](https://evil.invalid/p.png) @team #467 GH-467 0123456789abcdef0123456789abcdef01234567 :smile: <b>bold</b> `code` *em* ~~strike~~ user@example.invalid'
+  )
+
+  const out = runChangelog(dir, { head: 'HEAD', base: 'base' })
+  const prefix = `- [${head.short}](http://github.com/metcalfc/changelog-generator/commit/${head.sha}) - `
+  const subject = out.slice(prefix.length)
+
+  assert.ok(
+    out.startsWith(prefix),
+    'the generated commit link must be unchanged'
+  )
+  assert.equal(out, line(head))
+  assert.equal(subject, literalMarkdownSubject(head.subject))
+  assert.ok(subject.startsWith('`` '))
+  assert.ok(subject.endsWith(' ``'))
+})
+
+test('normalizes control bytes without creating additional entries', t => {
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const head = commit(
+    dir,
+    'fix:\ttab\u0007bell\u001b[31mansi\u007fdelete\rcontinued\u0085next\u2028line\u202eright\u2066isolate'
+  )
+
+  const out = runChangelog(dir, { head: 'HEAD', base: 'base' })
+  const unsafeControl = [...out].find(character => {
+    return (
+      character !== '\n' &&
+      (/[\p{Cc}\u2028\u2029]/u.test(character) ||
+        /\p{Bidi_Control}/u.test(character))
+    )
+  })
+
+  assert.equal(out, line(head))
+  assert.equal(unsafeControl, undefined)
+  assert.equal(out.split('\n').length, 1)
+})
+
+test('preserves Git subject folding for a multiline first paragraph', t => {
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const head = commit(dir, 'feat: first line\ncontinued line')
+
+  assert.equal(runChangelog(dir, { head: 'HEAD', base: 'base' }), line(head))
 })
 
 test('reports only the subject line of a multi-line commit message', t => {

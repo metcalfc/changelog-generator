@@ -4,7 +4,14 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-import { captureError, commit, createRepo, ROOT, tag } from './helpers/repo.mjs'
+import {
+  captureError,
+  commit,
+  createRepo,
+  line,
+  ROOT,
+  tag
+} from './helpers/repo.mjs'
 
 // These run the built bundle the way the runner does: `node dist/index.js`
 // with INPUT_* environment variables. That covers the wiring the other suites
@@ -47,16 +54,17 @@ test('the built action writes the changelog to GITHUB_OUTPUT', t => {
   const dir = createRepo(t)
   commit(dir, 'chore: base')
   tag(dir, 'base')
-  const head = commit(dir, 'feat: shipped through the bundle')
+  const head = commit(
+    dir,
+    'feat: [shipped](https://example.invalid) @maintainers'
+  )
 
   const { output } = runAction(dir)
 
   assert.match(output, /^changelog<</m)
-  assert.match(
-    output,
-    new RegExp(
-      `- \\[${head.short}\\]\\(http://github\\.com/octocat/hello-world/commit/${head.sha}\\) - feat: shipped through the bundle`
-    )
+  assert.ok(
+    output.includes(line(head, 'octocat/hello-world')),
+    'the built action must write the literal-text subject'
   )
 })
 
