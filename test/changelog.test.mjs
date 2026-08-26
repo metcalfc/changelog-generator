@@ -367,3 +367,39 @@ test('the renderer needs no node on PATH when ACTION_NODE is set', t => {
     line(head)
   )
 })
+
+// The assertions above compare the script against literalMarkdownSubject in
+// the test helper, which is a second copy of the same logic -- a bug written
+// into both would pass. These pin the escaping contract to literal expected
+// strings instead, so the helper is never the oracle.
+test('escapes commit subjects to known literal Markdown', t => {
+  const cases = [
+    ['fix: plain', '` fix: plain `'],
+    ['fix: has `one` tick', '`` fix: has `one` tick ``'],
+    ['fix: ```three``` ticks', '```` fix: ```three``` ticks ````'],
+    ['fix: trailing tick`', '`` fix: trailing tick` ``'],
+    ['`', '`` ` ``'],
+    [
+      'fix: [link](https://evil.invalid) @team #467',
+      '` fix: [link](https://evil.invalid) @team #467 `'
+    ],
+    ['fix:\ttab\u001b[31mansi\u202ebidi', '` fix: tab [31mansi bidi `']
+  ]
+
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  const commits = cases.map(([subject]) => commit(dir, subject))
+
+  const lines = runChangelog(dir, { head: 'HEAD', base: 'base' }).split('\n')
+
+  // Newest first, so the fixtures come back in reverse.
+  assert.equal(lines.length, cases.length)
+  cases.forEach(([, expected], index) => {
+    const { sha, short } = commits[index]
+    assert.equal(
+      lines[cases.length - 1 - index],
+      `- [${short}](http://github.com/metcalfc/changelog-generator/commit/${sha}) - ${expected}`
+    )
+  })
+})
