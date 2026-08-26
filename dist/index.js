@@ -46356,13 +46356,6 @@ async function getChangelog(headRef, baseRef, repoName, reverse, fetch) {
     }
     options.cwd = './'
 
-    // changelog.sh shells out to node to render commit subjects as literal
-    // Markdown. Hand it the interpreter already running this bundle rather
-    // than making it search PATH: in a container job the runner mounts its own
-    // node at /__e/node<version>/bin/node and never puts it on the container's
-    // PATH, so `node` is frequently absent in images users build jobs on.
-    options.env = { ...process.env, ACTION_NODE: process.execPath }
-
     // ncc's asset relocator rewrites this literal into a bundle-relative path
     // and copies changelog.sh into dist/, so `__dirname` resolves inside the
     // bundle even though the script lives next to it rather than next to this

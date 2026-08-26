@@ -70,15 +70,13 @@ export function runChangelog(
     base = '',
     repo = 'metcalfc/changelog-generator',
     reverse = 'false',
-    fetch = 'false',
-    env = {}
+    fetch = 'false'
   }
 ) {
   return execFileSync(CHANGELOG_SH, [head, base, repo, reverse, fetch], {
     cwd: dir,
     encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, ...env }
+    stdio: ['ignore', 'pipe', 'pipe']
   }).trimEnd()
 }
 
@@ -112,21 +110,9 @@ export function captureError(fn) {
   throw new Error('expected the command to fail, but it succeeded')
 }
 
-export function literalMarkdownSubject(subject) {
-  const normalized = subject.replace(
-    /[\p{Cc}\u2028\u2029]|\p{Bidi_Control}/gu,
-    ' '
-  )
-  const runs = normalized.match(/`+/g) || []
-  const width = runs.reduce((longest, run) => Math.max(longest, run.length), 0)
-  const delimiter = '`'.repeat(width + 1)
-  return `${delimiter} ${normalized} ${delimiter}`
-}
-
 /**
  * The markdown line changelog.sh is expected to emit for a commit.
  */
 export function line(commitInfo, repo = 'metcalfc/changelog-generator') {
-  const subject = literalMarkdownSubject(commitInfo.subject)
-  return `- [${commitInfo.short}](http://github.com/${repo}/commit/${commitInfo.sha}) - ${subject}`
+  return `- [${commitInfo.short}](http://github.com/${repo}/commit/${commitInfo.sha}) - ${commitInfo.subject}`
 }
