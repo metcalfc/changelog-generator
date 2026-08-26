@@ -34,7 +34,23 @@ Whether this action should pull in all other branches and tags. Default: 'true'
 
 ### `changelog`
 
-Markdown formatted changelog.
+Markdown formatted changelog. One line per commit:
+
+```markdown
+- [2c37a1c](http://github.com/owner/repo/commit/2c37a1c...) - ` feat: add the thing `
+```
+
+The commit subject is wrapped in an inline-code span, so it renders as
+literal text. A commit message is untrusted input -- anyone who can land a
+commit chooses it -- and these lines are pasted straight into release notes.
+Without the code span a subject could add its own links, images, `@mentions`,
+issue references, raw HTML, or extra changelog entries to your release.
+
+The practical consequences: subjects render monospace, and `#123`, `GH-123`,
+bare SHAs, and `:emoji:` inside a subject no longer autolink. The generated
+commit link at the start of each line is unaffected. Control characters,
+line and paragraph separators, and bidirectional-control characters are
+replaced with spaces, so a subject can never span more than its own line.
 
 ## Example usage
 
@@ -166,6 +182,12 @@ You can verify that a release was built by this repository's CI:
 ```bash
 gh attestation verify --repo metcalfc/changelog-generator dist/index.js
 ```
+
+### Commit subjects are treated as untrusted
+
+The action renders every commit subject as literal text rather than active
+Markdown. See [`changelog`](#changelog) for what that changes in your release
+notes and why.
 
 ### Report vulnerabilities
 
