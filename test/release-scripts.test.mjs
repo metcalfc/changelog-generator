@@ -16,6 +16,10 @@ import { ROOT } from './helpers/repo.mjs'
 const scripts = JSON.parse(
   readFileSync(join(ROOT, 'package.json'), 'utf8')
 ).scripts
+const releaseWorkflow = readFileSync(
+  join(ROOT, '.github', 'workflows', 'release.yml'),
+  'utf8'
+)
 
 /**
  * Run one of package.json's scripts against a copy of the files it edits, so
@@ -79,4 +83,30 @@ test('the bump scripts avoid GNU-only sed -i', () => {
       `${name} must not use GNU-only in-place sed`
     )
   }
+})
+
+test('the release tag crosses into the shell only through the environment', () => {
+  const stepStart = releaseWorkflow.indexOf(
+    '      - name: Update Major Version Tag'
+  )
+  assert.notEqual(stepStart, -1, 'major-tag update step must exist')
+
+  // Bound the slice at the next step. Reading to end-of-file only works while
+  // this is the last step in the file, and silently widens if one is appended.
+  const nextStep = releaseWorkflow.indexOf('\n      - name:', stepStart + 1)
+  const step = releaseWorkflow.slice(
+    stepStart,
+    nextStep === -1 ? undefined : nextStep
+  )
+  const envStart = step.indexOf('\n        env:')
+  assert.notEqual(envStart, -1, 'major-tag update step must declare env')
+
+  const run = step.slice(0, envStart)
+  const env = step.slice(envStart)
+
+  assert.doesNotMatch(run, /\$\{\{\s*github\.ref_name\s*\}\}/)
+  assert.match(run, /printf '[^']+' "\$TAG_NAME"/)
+  assert.match(run, /git tag -f "\$MAJOR_VERSION"/)
+  assert.match(run, /git push origin "\$MAJOR_VERSION" --force/)
+  assert.match(env, /TAG_NAME: \$\{\{\s*github\.ref_name\s*\}\}/)
 })
