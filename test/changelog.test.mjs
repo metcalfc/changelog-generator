@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 import {
@@ -402,4 +402,68 @@ test('escapes commit subjects to known literal Markdown', t => {
       `- [${short}](http://github.com/metcalfc/changelog-generator/commit/${sha}) - ${expected}`
     )
   })
+})
+
+// Three checks carried over from the abandoned Jest suite in #371, which was
+// closed by the stale bot rather than on merit. They cover properties the rest
+// of this file happens to rely on without ever stating.
+
+test('emits no trailing whitespace on any line', t => {
+  // Two spaces at the end of a Markdown line are a hard line break, so
+  // trailing whitespace silently changes how a release renders. The code span
+  // puts a pad space before the closing backtick, which is exactly the kind of
+  // thing that grows into a trailing space if the padding is ever reworked.
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  commit(dir, 'feat: an ordinary subject')
+  commit(dir, 'fix: a subject ending in a control byte\t')
+
+  const out = runChangelog(dir, { head: 'HEAD', base: 'base' })
+
+  assert.deepEqual(
+    out.split('\n').filter(line => /\s$/.test(line)),
+    []
+  )
+})
+
+test('produces identical output for identical inputs', t => {
+  // Commit the fixtures at one instant. Distinct timestamps make git log's
+  // order total, so a repository where they collide is the one that would
+  // expose an unstable sort -- and it is the realistic case, since a scripted
+  // release can easily land several commits inside the same second.
+  const dir = createRepo(t)
+  const at = '2021-01-01T00:00:00Z'
+  const stamp = { GIT_AUTHOR_DATE: at, GIT_COMMITTER_DATE: at }
+
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  // Six entries, not three: this test can only fail by observing two runs
+  // disagree, and the fewer the entries the more often an unstable order
+  // reproduces itself by chance. At six a coincidence is 1 in 720.
+  const subjects = Array.from({ length: 6 }, (unused, i) => `feat: number ${i}`)
+  for (const subject of subjects) {
+    writeFileSync(join(dir, 'file.txt'), `${subject}\n`)
+    git(dir, ['add', '--all'])
+    git(dir, ['commit', '--quiet', '--message', subject], stamp)
+  }
+
+  const first = runChangelog(dir, { head: 'HEAD', base: 'base' })
+  assert.equal(runChangelog(dir, { head: 'HEAD', base: 'base' }), first)
+  assert.equal(first.split('\n').length, 6)
+})
+
+test('swapping base and head yields the same changelog', t => {
+  // The range is git's three-dot symmetric difference, so the entries do not
+  // depend on which way round the refs arrive. A workflow that has them
+  // backwards still gets its changelog instead of silently getting nothing.
+  const dir = createRepo(t)
+  commit(dir, 'chore: base')
+  tag(dir, 'base')
+  commit(dir, 'feat: one')
+  commit(dir, 'fix: two')
+
+  const forward = runChangelog(dir, { head: 'HEAD', base: 'base' })
+  assert.equal(runChangelog(dir, { head: 'base', base: 'HEAD' }), forward)
+  assert.equal(forward.split('\n').length, 2)
 })
