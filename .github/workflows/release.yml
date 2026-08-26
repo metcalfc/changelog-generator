@@ -35,8 +35,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update Major Version Tag
         run: |
-          MAJOR_VERSION=$(echo "${{ github.ref_name }}" | grep -oE 'v[0-9]+')
-          git tag -f $MAJOR_VERSION
-          git push origin $MAJOR_VERSION --force
+          MAJOR_VERSION=$(printf '%s\n' "$TAG_NAME" | grep -oE 'v[0-9]+')
+          git tag -f "$MAJOR_VERSION"
+          git push origin "$MAJOR_VERSION" --force
         env:
+          TAG_NAME: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
