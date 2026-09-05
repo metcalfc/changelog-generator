@@ -35,6 +35,7 @@ export function createRepo(t) {
   git(dir, ['config', 'user.email', 'test@example.com'])
   git(dir, ['config', 'user.name', 'Changelog Test'])
   git(dir, ['config', 'commit.gpgsign', 'false'])
+  git(dir, ['config', 'tag.gpgsign', 'false'])
   return dir
 }
 
